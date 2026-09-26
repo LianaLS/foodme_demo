@@ -35,6 +35,40 @@ export default function Checkout() {
     enabled: chefId !== undefined && subtotal > 0,
   });
 
+
+    // 💥 ԱՎԵԼԱՑՐԵՔ ԱՅՍ ՏՈՂԸ ԱՅՍՏԵՂ.
+    throw new Error("Simulated bug: Order processing failed!");
+
+    const payload: OrderDto = {
+      chefId,
+      receiverName: values.receiverName,
+      // ...
+
+
+  
+const handleSubmit = async (values: CheckoutFormValues) => {
+    if (chefId === undefined) return;
+    if (!isAuthenticated) {
+      setSubmitError("Sign in or create an account to place your order.");
+      return;
+    }
+    setDeliveryMethod(values.deliveryMethod);
+    setSubmitting(true);
+    setSubmitError(null);
+
+
+  
+const handleSubmit = async (values: CheckoutFormValues) => {
+    if (chefId === undefined) return;
+    if (!isAuthenticated) {
+      setSubmitError("Sign in or create an account to place your order.");
+      return;
+    }
+    setDeliveryMethod(values.deliveryMethod);
+    setSubmitting(true);
+    setSubmitError(null);
+
+   
   const handleSubmit = async (values: CheckoutFormValues) => {
     if (chefId === undefined) return;
     if (!isAuthenticated) {
@@ -45,14 +79,7 @@ export default function Checkout() {
     setSubmitting(true);
     setSubmitError(null);
 
-    // 💥 ԱՎԵԼԱՑՐԵՔ ԱՅՍ ՏՈՂԸ ԱՅՍՏԵՂ.
-    throw new Error("Simulated bug: Order processing failed!");
-
-    const payload: OrderDto = {
-      chefId,
-      receiverName: values.receiverName,
-      // ...
-
+   
   const handleSubmit = async (values: CheckoutFormValues) => {
     if (chefId === undefined) return;
     if (!isAuthenticated) {
