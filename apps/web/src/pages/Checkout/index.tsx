@@ -47,6 +47,13 @@ export default function Checkout() {
     setDeliveryMethod(values.deliveryMethod);
     setSubmitting(true);
     setSubmitError(null);
+    // 💥 ԱՎԵԼԱՑՐԵՔ ԱՅՍ ՏՈՂԸ ԱՅՍՏԵՂ.
+    throw new Error("Simulated bug: Order processing failed!");
+
+    const payload: OrderDto = {
+      chefId,
+      receiverName: values.receiverName,
+      // ...
 
     const payload: OrderDto = {
       chefId,
