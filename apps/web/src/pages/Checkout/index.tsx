@@ -35,30 +35,9 @@ export default function Checkout() {
     enabled: chefId !== undefined && subtotal > 0,
   });
 
-  
- 
-const handleSubmit = async (values: CheckoutFormValues) => {
-    if (chefId === undefined) return;
-    if (!isAuthenticated) {
-      setSubmitError("Sign in or create an account to place your order.");
-      return;
-    }
-    setDeliveryMethod(values.deliveryMethod);
-    setSubmitting(true);
-    setSubmitError(null);
+  const deliveryPrice = deliveryPriceQuery.data?.deliveryPrice ?? 0;
+  const freeDeliveryFrom = deliveryPriceQuery.data?.freeDeliveryFrom ?? 0;
 
-   
-  const handleSubmit = async (values: CheckoutFormValues) => {
-    if (chefId === undefined) return;
-    if (!isAuthenticated) {
-      setSubmitError("Sign in or create an account to place your order.");
-      return;
-    }
-    setDeliveryMethod(values.deliveryMethod);
-    setSubmitting(true);
-    setSubmitError(null);
-
-   
   const handleSubmit = async (values: CheckoutFormValues) => {
     if (chefId === undefined) return;
     if (!isAuthenticated) {
