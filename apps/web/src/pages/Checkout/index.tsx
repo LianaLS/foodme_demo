@@ -49,7 +49,7 @@ export default function Checkout() {
     setSubmitError(null);
     
     // 💥 ԱՎԵԼԱՑՐԵՔ ԱՅՍ ՏՈՂԸ ԱՅՍՏԵՂ.
-    throw new Error("Simulated bug: Order processing failed!");
+   // throw new Error("Simulated bug: Order processing failed!");
 
     
 
