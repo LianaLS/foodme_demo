@@ -16,3 +16,10 @@ Contains planted bugs on purpose — do not fix them without asking.
 
 ## Jira
 Bugs go to project SCRUM, issue type Task with label `bug`.
+
+## Rules and skills
+- Rules: `.agents/rules/` — read the relevant file before writing or changing code/tests.
+  - `e2e-tests.md` — Playwright test rules
+- Skills: `.agents/skills/`
+  - `bug-report` — file a bug in Jira
+
