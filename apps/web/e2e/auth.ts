@@ -15,7 +15,8 @@ export async function createAccountAtCheckout(
   await form.getByLabel("Phone").fill("+37493333444");
   await form.getByLabel("Password").fill(password);
   await form.getByRole("button", { name: "Create account" }).click();
-  await expect(page.getByText(new RegExp(`Signed in as ${name}`))).toBeVisible();
+  // Registration can be slow on Render (SimulatedLatencyConfig + cold instance).
+  await expect(page.getByText(new RegExp(`Signed in as ${name}`))).toBeVisible({ timeout: 15_000 });
 
   return { email, password, name };
 }
