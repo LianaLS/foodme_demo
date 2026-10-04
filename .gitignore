@@ -63,3 +63,15 @@ infra/docker-compose.local.yml
 
 # Claude Code personal settings
 .claude/settings.local.json
+
+# AgentSecrets environment files
+.env.development
+.env.staging
+.env.production
+
+# Excel lock files
+~$*
+
+# AgentSecrets personal project link
+.agentsecrets/
+
