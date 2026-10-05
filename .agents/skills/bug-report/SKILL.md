@@ -69,6 +69,11 @@ If you find a likely duplicate, show it to the user (key, summary, status, link)
 ## Severity
 <Blocker | Critical | Major | Minor | Trivial> — <one-line justification>
 
+## Traceability
+- Requirement: REQ-xx (from `qa/02-analysis/requirements.md`)
+- Test case: TC-xx / automated test file and title
+- Found during: <test level — component / API / system / acceptance> · <activity — scripted run, exploratory session EC-xx, review>
+
 ## Additional notes
 <frequency (always / sometimes), workaround, related issues, source-code pointer>
 ~~~
@@ -91,6 +96,12 @@ If the user gave a screenshot or file, create the issue first and then attach/em
 ### 5. Report back
 
 Reply briefly with the issue key as a link (`https://liana-qa.atlassian.net/browse/SCRUM-N`), the summary, and anything you couldn't do (e.g. the attachment). Don't repeat the whole description back.
+
+### 6. Update the testware
+
+Severity scale, lifecycle and the full field list are in `.agents/rules/defect-management.md`. After the issue exists, offer to:
+- put the key into the "Defects" column of `qa/04-implementation/traceability-matrix.md`;
+- mark the automated test that exposes it with `test.fail()` (Playwright) or `@Disabled` (JUnit) and an `issue` annotation with the key, so the regression suite stays green until the fix.
 
 ## Example
 
