@@ -20,7 +20,7 @@ function summaryAmount(container: Locator, label: string): Locator {
     .last();
 }
 
-test("Alans Kitchen: 2 x soup -> total = unit price x 2 -> order placed", async ({ page }) => {
+test("Alans Kitchen: 2 x soup -> total = unit price x 2 -> order placed", { tag: ["@regression"], annotation: [{ type: "testCase", description: "TC-21" }, { type: "requirement", description: "REQ-10" }] }, async ({ page }) => {
   test.setTimeout(90_000);
 
   // 1. Open the site and click the FoodMe button (logo in header)

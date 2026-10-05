@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 
 // FM-BUG-07 / KAN-19: "−" must lower quantity by one, removing only at the minimum.
-test("decreasing cart quantity lowers it by one and removes only at minimum", async ({ page }) => {
+test("decreasing cart quantity lowers it by one and removes only at minimum", { tag: ["@regression"], annotation: [{ type: "testCase", description: "TC-04" }, { type: "requirement", description: "REQ-04" }] }, async ({ page }) => {
   await page.goto("/explore");
   await page.locator("a.cc_card").first().click();
   await expect(page).toHaveURL(/\/chef\/\d+/);

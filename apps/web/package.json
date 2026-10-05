@@ -9,7 +9,12 @@
     "lint": "oxlint",
     "preview": "vite preview",
     "test:e2e": "playwright test",
-    "test:e2e:all": "npm run test:e2e && npm --prefix ../admin run test:e2e"
+    "test:e2e:all": "npm run test:e2e && npm --prefix ../admin run test:e2e",
+    "test:unit": "vitest run",
+    "test:smoke": "playwright test --grep @smoke --workers=2",
+    "test:regression": "playwright test --grep @regression --workers=2",
+    "test:api": "playwright test --grep @api --workers=2",
+    "test:a11y": "playwright test --grep @a11y --workers=2"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.9.1",
@@ -36,15 +41,18 @@
     "zod": "^4.5.4"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
     "@playwright/test": "^1.62.1",
     "@tailwindcss/vite": "^4.3.3",
     "@types/node": "^24.13.3",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",
     "@vitejs/plugin-react": "^6.1.0",
+    "fake-indexeddb": "^6.2.5",
     "oxlint": "^1.79.0",
     "tailwindcss": "^4.3.3",
     "typescript": "~6.0.2",
-    "vite": "^8.2.2"
+    "vite": "^8.2.2",
+    "vitest": "^5.0.3"
   }
 }

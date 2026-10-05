@@ -1,10 +1,11 @@
 import { test, expect } from "@playwright/test";
 import { createAccountAtCheckout } from "./auth";
 
-const API = "http://localhost:8081";
+// Empty by default: requests use relative URLs and follow baseURL from playwright.config.ts.
+const API = process.env.VITE_API_BASE_URL ?? "";
 
-test.describe("Layout Tests", () => {
-  test("Home page structure and sections", async ({ page }) => {
+test.describe("Layout Tests", { tag: "@regression" }, () => {
+  test("Home page structure and sections", { annotation: [{ type: "testCase", description: "TC-01" }, { type: "requirement", description: "REQ-01" }] }, async ({ page }) => {
     await page.goto("/");
 
     const heroHeading = page.getByRole("heading", { name: /Real food, made by/i, level: 1 });
@@ -38,7 +39,7 @@ test.describe("Layout Tests", () => {
     await expect(browseChefsBtn).toBeVisible();
   });
 
-  test("Explore page layout", async ({ page }) => {
+  test("Explore page layout", { annotation: [{ type: "testCase", description: "TC-01" }, { type: "requirement", description: "REQ-01" }] }, async ({ page }) => {
     await page.goto("/explore");
 
     const exploreHeading = page.getByRole("heading", { name: "Explore chefs", level: 1 });
@@ -61,7 +62,7 @@ test.describe("Layout Tests", () => {
     expect(metadata).not.toBe(`${cardName} · 25–40 min`);
   });
 
-  test("Responsive layout check - Mobile view", async ({ page }) => {
+  test("Responsive layout check - Mobile view", { annotation: [{ type: "requirement", description: "REQ-NF-05" }] }, async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 667 });
     await page.goto("/");
 
@@ -73,7 +74,7 @@ test.describe("Layout Tests", () => {
     await expect(page.getByRole("searchbox")).toHaveValue("Argentinean");
   });
 
-  test("cart and checkout item details stay aligned", async ({ page }) => {
+  test("cart and checkout item details stay aligned", { annotation: [{ type: "testCase", description: "TC-03" }, { type: "requirement", description: "REQ-03" }] }, async ({ page }) => {
     const chefs = await (await page.request.get(`${API}/api/chef/active?page=0&size=12`)).json();
     let chefId: number | undefined;
     let dishName: string | undefined;

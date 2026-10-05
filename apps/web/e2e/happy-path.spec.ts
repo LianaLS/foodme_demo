@@ -1,9 +1,10 @@
 import { test, expect } from "@playwright/test";
 import { createAccountAtCheckout, registerCustomerViaApi } from "./auth";
 
-const API = process.env.VITE_API_BASE_URL || "http://localhost:8081";
+// Empty by default: requests use relative URLs and follow baseURL from playwright.config.ts.
+const API = process.env.VITE_API_BASE_URL ?? "";
 
-test("explore -> chef -> add 2 dishes -> cart total -> cash checkout -> success", async ({
+test("explore -> chef -> add 2 dishes -> cart total -> cash checkout -> success", { tag: ["@regression", "@smoke"], annotation: [{ type: "testCase", description: "TC-09" }, { type: "requirement", description: "REQ-10" }] }, async ({
   page,
 }) => {
   await page.goto("/explore");
@@ -42,7 +43,7 @@ test("explore -> chef -> add 2 dishes -> cart total -> cash checkout -> success"
   await expect(page.getByText("Order placed!")).toBeVisible();
 });
 
-test("dish modal additions raise cart line price", async ({ page }) => {
+test("dish modal additions raise cart line price", { tag: ["@regression"], annotation: [{ type: "testCase", description: "TC-03" }, { type: "requirement", description: "REQ-03" }] }, async ({ page }) => {
   const chefs = await page.request.get(`${API}/api/chef/active?page=0&size=12`);
   expect(chefs.ok()).toBeTruthy();
   const chefBody = await chefs.json();
@@ -93,7 +94,7 @@ test("dish modal additions raise cart line price", async ({ page }) => {
   await expect(cartPanel.locator(".cic_root")).toHaveCount(1);
 });
 
-test("takeaway checkout succeeds without address", async ({ page }) => {
+test("takeaway checkout succeeds without address", { tag: ["@regression", "@smoke"], annotation: [{ type: "testCase", description: "TC-10" }, { type: "requirement", description: "REQ-10" }] }, async ({ page }) => {
   await page.goto("/explore");
   await page.locator("a.cc_card").first().click();
   await expect(page).toHaveURL(/\/chef\/\d+/);
@@ -114,7 +115,7 @@ test("takeaway checkout succeeds without address", async ({ page }) => {
   await expect(page.getByText("Order placed!")).toBeVisible();
 });
 
-test("admin can login and list orders after a storefront checkout", async ({
+test("admin can login and list orders after a storefront checkout", { tag: ["@regression"], annotation: [{ type: "testCase", description: "TC-15" }, { type: "requirement", description: "REQ-15" }] }, async ({
   page,
   request,
 }) => {

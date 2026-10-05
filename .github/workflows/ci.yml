@@ -43,6 +43,14 @@ jobs:
           reporter: java-junit
           fail-on-error: false
 
+      - name: Upload JaCoCo coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-coverage
+          path: apps/backend/build/reports/jacoco/test/
+          if-no-files-found: warn
+
   web:
     name: Web Build
     runs-on: ubuntu-latest
@@ -63,6 +71,10 @@ jobs:
       - name: Lint
         working-directory: apps/web
         run: npm run lint
+
+      - name: Component tests (Vitest)
+        working-directory: apps/web
+        run: npm run test:unit
 
       - name: Build
         working-directory: apps/web

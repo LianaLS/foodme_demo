@@ -12,8 +12,8 @@ async function addFirstDishToCart(page: import("@playwright/test").Page) {
   return cart;
 }
 
-test.describe("Storefront flows", () => {
-  test("home CTA navigates to explore and header Explore chefs works", async ({ page }) => {
+test.describe("Storefront flows", { tag: "@regression" }, () => {
+  test("home CTA navigates to explore and header Explore chefs works", { tag: ["@smoke"], annotation: [{ type: "testCase", description: "TC-01" }, { type: "requirement", description: "REQ-01" }] }, async ({ page }) => {
     await page.goto("/");
     await page.getByRole("link", { name: "Order now" }).first().click();
     await expect(page).toHaveURL(/\/explore/);
@@ -24,7 +24,7 @@ test.describe("Storefront flows", () => {
     await expect(page).toHaveURL(/\/explore/);
   });
 
-  test("register from header opens orders history", async ({ page }) => {
+  test("register from header opens orders history", { annotation: [{ type: "testCase", description: "TC-12" }, { type: "requirement", description: "REQ-13" }] }, async ({ page }) => {
     await page.goto("/");
     await page.getByRole("banner").getByRole("link", { name: "Sign in" }).click();
     await expect(page).toHaveURL(/\/login/);
@@ -43,12 +43,12 @@ test.describe("Storefront flows", () => {
     await expect(page.getByText(/No orders yet/i)).toBeVisible();
   });
 
-  test("empty checkout shows browse message", async ({ page }) => {
+  test("empty checkout shows browse message", { annotation: [{ type: "testCase", description: "TC-08" }, { type: "requirement", description: "REQ-08" }] }, async ({ page }) => {
     await page.goto("/checkout");
     await expect(page.getByText(/Your cart is empty/i)).toBeVisible();
   });
 
-  test("cart quantity increase and remove item", async ({ page }) => {
+  test("cart quantity increase and remove item", { annotation: [{ type: "testCase", description: "TC-04" }, { type: "testCase", description: "TC-05" }, { type: "requirement", description: "REQ-04" }] }, async ({ page }) => {
     const cart = await addFirstDishToCart(page);
 
     await cart.getByRole("button", { name: "Increase quantity" }).click();
@@ -59,7 +59,7 @@ test.describe("Storefront flows", () => {
     await expect(cart.getByText(/empty/i)).toBeVisible();
   });
 
-  test("delivery shows address fields; takeaway hides them", async ({ page }) => {
+  test("delivery shows address fields; takeaway hides them", { annotation: [{ type: "testCase", description: "TC-10" }, { type: "requirement", description: "REQ-09" }] }, async ({ page }) => {
     await addFirstDishToCart(page);
     await page.locator("aside.uc-panel").getByRole("link", { name: "Go to checkout" }).click();
     await expect(page).toHaveURL(/\/checkout/);
@@ -79,7 +79,7 @@ test.describe("Storefront flows", () => {
     await expect(page.getByLabel("City")).toBeVisible();
   });
 
-  test("payment methods are selectable visual options", async ({ page }) => {
+  test("payment methods are selectable visual options", { annotation: [{ type: "requirement", description: "REQ-09" }] }, async ({ page }) => {
     await addFirstDishToCart(page);
     await page.locator("aside.uc-panel").getByRole("link", { name: "Go to checkout" }).click();
     await createAccountAtCheckout(page);
@@ -95,7 +95,7 @@ test.describe("Storefront flows", () => {
     await expect(idram).toBeChecked();
   });
 
-  test("idram checkout still places a cash order", async ({ page }) => {
+  test("idram checkout still places a cash order", { annotation: [{ type: "requirement", description: "REQ-09" }] }, async ({ page }) => {
     await addFirstDishToCart(page);
     await page.locator("aside.uc-panel").getByRole("link", { name: "Go to checkout" }).click();
 
@@ -114,7 +114,7 @@ test.describe("Storefront flows", () => {
     await expect(page.getByText("Order placed!")).toBeVisible();
   });
 
-  test("full delivery checkout shows order number and track link", async ({ page }) => {
+  test("full delivery checkout shows order number and track link", { tag: ["@smoke"], annotation: [{ type: "testCase", description: "TC-09" }, { type: "requirement", description: "REQ-10" }, { type: "requirement", description: "REQ-12" }] }, async ({ page }) => {
     await addFirstDishToCart(page);
     await page.locator("aside.uc-panel").getByRole("link", { name: "Go to checkout" }).click();
 
@@ -145,7 +145,7 @@ test.describe("Storefront flows", () => {
     await expect(page.getByText(orderNumber!)).toBeVisible();
   });
 
-  test("chef page from home popular section", async ({ page }) => {
+  test("chef page from home popular section", { annotation: [{ type: "testCase", description: "TC-01" }, { type: "requirement", description: "REQ-02" }] }, async ({ page }) => {
     await page.goto("/");
     const chefsGrid = page.locator("section:has-text('Chefs worth knowing') .grid").first();
     const card = chefsGrid.locator("a.cc_card").first();
@@ -155,7 +155,7 @@ test.describe("Storefront flows", () => {
     await expect(page.locator("button.dc_card").first()).toBeVisible();
   });
 
-  test("missing chef does not ask to clear another chef's cart", async ({ page }) => {
+  test("missing chef does not ask to clear another chef's cart", { annotation: [{ type: "testCase", description: "TC-02" }, { type: "requirement", description: "REQ-06" }] }, async ({ page }) => {
     await addFirstDishToCart(page);
     await page.goto("/chef/999999");
 
@@ -163,7 +163,7 @@ test.describe("Storefront flows", () => {
     await expect(page.getByText("Switch kitchens?")).toHaveCount(0);
   });
 
-  test("failed order page renders recovery link", async ({ page }) => {
+  test("failed order page renders recovery link", { annotation: [{ type: "requirement", description: "REQ-10" }] }, async ({ page }) => {
     await page.goto("/orders/failed");
     await expect(page.getByRole("heading", { name: "Order failed" })).toBeVisible();
     await expect(page.getByRole("link", { name: "Back to explore" })).toBeVisible();
