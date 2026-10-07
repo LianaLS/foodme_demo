@@ -57,4 +57,4 @@ jobs:
             the mutation score, a table (# | File:line | Mutation | Result),
             and for every SURVIVED mutant the test case that would kill it.
             Never commit or push anything.
-          claude_args: '--max-turns 80 --allowedTools "Edit,Read,Glob,Grep,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(./apps/backend/gradlew:*),Bash(git checkout -- :*),Bash(git status:*),Bash(git diff:*)"'
+          claude_args: '--max-turns 80 --allowedTools "Edit,Read,Glob,Grep,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(./apps/backend/gradlew:*),Bash(git checkout:*),Bash(git status:*),Bash(git diff:*)"'
