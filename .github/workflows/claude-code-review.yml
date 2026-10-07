@@ -1,0 +1,53 @@
+name: Claude Code Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, ready_for_review, reopened]
+
+jobs:
+  claude-review:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: read
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run Claude Code Review
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          show_full_output: true
+          prompt: |
+            REPO: ${{ github.repository }}
+            PR NUMBER: ${{ github.event.pull_request.number }}
+
+            You are a senior developer reviewing this pull request.
+
+            First read CLAUDE.md and AGENTS.md - they describe the project
+            and its rules. Code marked with FM-BUG-xx comments is a planted
+            bug for QA training: mention it only if the PR changes it.
+            Then read the PR changes with `gh pr diff` and the code they touch.
+
+            Look for:
+            1. Bugs - wrong logic, missing checks, null errors, wrong status
+               codes, data that is not saved or saved twice.
+            2. Security - missing authorization, one user reaching another
+               user's data, injection, secrets in code.
+            3. Database - every entity change needs a new Flyway migration.
+            4. Performance - N+1 queries, needless loops or requests.
+            5. Readability - only if it really hurts understanding.
+
+            For each real problem, post an inline comment on the exact line
+            with mcp__github_inline_comment__create_inline_comment.
+            Then post ONE summary comment on the PR with `gh pr comment`:
+            a short verdict and a table (File:line | Problem | Severity).
+            If you find nothing serious, say so in the summary.
+            Do not change any code.
+          claude_args: '--allowedTools "mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*)"'
