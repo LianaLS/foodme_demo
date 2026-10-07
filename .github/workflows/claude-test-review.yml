@@ -1,0 +1,52 @@
+name: Claude Test Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, ready_for_review, reopened]
+
+jobs:
+  test-review:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: read
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Review the tests
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          prompt: |
+            REPO: ${{ github.repository }}
+            PR NUMBER: ${{ github.event.pull_request.number }}
+
+            You are a senior QA engineer. Review the TESTS in this pull
+            request (not the production code).
+
+            First read AGENTS.md, .agents/rules/e2e-tests.md and
+            .agents/rules/test-design.md - they are the team's test rules.
+            Then read the PR changes with `gh pr diff`.
+
+            Check:
+            1. Coverage - which new or changed behaviour has no test?
+            2. Test design - are boundary values (BVA), invalid classes (EP)
+               and error paths covered? Name the missing cases.
+            3. Assertions - does every test check something meaningful?
+               Flag tests that can never fail.
+            4. Rule violations - page.waitForTimeout(), CSS/XPath locators
+               instead of getByRole/getByLabel, missing tags, expected results
+               taken from current app behaviour instead of the requirement.
+            5. Flakiness risks - timing, shared test data, test order.
+
+            Post ONE comment on the PR with `gh pr comment` containing:
+            a short verdict, a table (Test file | Finding | Severity |
+            Suggestion), and a list of missing test cases.
+            Do not change any code.
+          claude_args: '--allowedTools "Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*)"'
