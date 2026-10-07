@@ -19,6 +19,7 @@ import {
     DialogActions,
     TextField,
     Stack,
+    Rating,
 } from '@mui/material';
 import { OrderStatus, OrderStatusColors, OrderStatusTransitions } from '../../constants/OrderStatus.jsx';
 import { updateOrderStatus } from '../../api/order-api.js';
@@ -163,6 +164,41 @@ const OrderDetails = () => {
                     <Typography variant="h6">Total</Typography>
                     <Typography variant="h6">{record.totalPrice} AMD</Typography>
                 </Stack>
+
+                {/* SCRUM-7 R20–R22: only delivered orders can carry a review. */}
+                {record.status === OrderStatus.DELIVERED && (
+                    <>
+                        <Divider sx={{ my: 2 }} />
+                        <Box component="section" aria-labelledby="customer-review-heading">
+                            <Typography
+                                id="customer-review-heading"
+                                variant="subtitle2"
+                                color="text.secondary"
+                                sx={{ mb: 1 }}
+                            >
+                                Customer review
+                            </Typography>
+                            {record.review ? (
+                                <>
+                                    <Stack direction="row" alignItems="center" spacing={1}>
+                                        <Rating value={record.review.stars} readOnly />
+                                        <Typography variant="body2" color="text.secondary">
+                                            {record.review.stars}/5 ·{' '}
+                                            {new Date(record.review.createdAt).toLocaleString()}
+                                        </Typography>
+                                    </Stack>
+                                    {record.review.comment && (
+                                        <Typography sx={{ mt: 1, whiteSpace: 'pre-line' }}>
+                                            {record.review.comment}
+                                        </Typography>
+                                    )}
+                                </>
+                            ) : (
+                                <Typography color="text.secondary">No review yet</Typography>
+                            )}
+                        </Box>
+                    </>
+                )}
 
                 {availableTransitions.length > 0 && (
                     <>
