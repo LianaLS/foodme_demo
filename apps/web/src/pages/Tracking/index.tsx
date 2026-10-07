@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Check, ChefHat, Package, Truck, X } from "lucide-react";
 import { foodmeApi } from "@/api/foodme";
 import { Button } from "@/components/ui/button";
+import { StarRatingDisplay } from "@/components/sections/star-rating";
 import { formatAmd } from "@/lib/utils";
 import { useAuth } from "@/providers/auth-provider";
 
@@ -205,6 +206,19 @@ export default function Tracking() {
           </div>
         </div>
       </div>
+
+      {/* R13: a rated order shows its rating wherever its details are shown. */}
+      {data.review && (
+        <div className="bezel-outer shadow-diffuse mt-5 animate-fade-up [animation-delay:180ms]">
+          <div className="bezel-inner px-5 py-4">
+            <p className="text-base font-bold text-zinc-900">Customer rating</p>
+            <StarRatingDisplay stars={data.review.stars} size={18} className="mt-2" />
+            {data.review.comment && (
+              <p className="mt-2 break-words text-sm text-zinc-600">“{data.review.comment}”</p>
+            )}
+          </div>
+        </div>
+      )}
       </div>
     </div>
   );
