@@ -1,0 +1,48 @@
+name: Claude Spec Check
+
+on:
+  pull_request:
+    types: [opened, synchronize, ready_for_review, reopened]
+
+jobs:
+  spec-check:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: read
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Compare implementation with the spec
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          prompt: |
+            REPO: ${{ github.repository }}
+            PR NUMBER: ${{ github.event.pull_request.number }}
+
+            You are a QA engineer. Compare what this pull request implements
+            with the feature specification.
+
+            1. Find the spec: a *.spec.md file added or changed in this PR
+               (for example order-ratings.spec.md). If there is none, look for
+               a Jira key (SCRUM-xx) in the PR title or branch name and say
+               that no spec file was found.
+            2. Read the PR changes with `gh pr diff` and the code they touch.
+            3. For every requirement (R1, R2, ...) decide: Implemented,
+               Partly implemented, Missing, or Cannot verify. Give the file
+               and line that proves it.
+            4. List anything the PR does that the spec does not ask for.
+            5. List requirements that have no test.
+
+            Post ONE comment on the PR with `gh pr comment` containing:
+            a short summary, a table (Requirement | Status | Evidence | Test),
+            then "Not in spec" and "Missing tests" sections.
+            Do not change any code.
+          claude_args: '--allowedTools "Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*)"'
