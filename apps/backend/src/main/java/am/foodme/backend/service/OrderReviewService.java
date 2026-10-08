@@ -78,17 +78,22 @@ public class OrderReviewService {
         return OrderDto.mapEntityToDto(order);
     }
 
-    /** R10/R11: the chef's rating is the average of all their ratings, one decimal place. */
+    /**
+     * R10/R11: the chef's rating is the average of all their ratings, one decimal place.
+     * SCRUM-8: the chef row is locked first, so parallel ratings are averaged one after another.
+     */
     private void updateChefRating(Chef chef) {
         if (chef == null) {
             return;
         }
+        chefRepository.findByIdForUpdate(chef.getId());
         Double average = orderReviewRepository.averageStarsForChef(chef.getId());
         if (average == null) {
             return;
         }
-        chef.setRating(BigDecimal.valueOf(average).setScale(1, RoundingMode.HALF_UP).doubleValue());
-        chefRepository.save(chef);
+        double rating = BigDecimal.valueOf(average).setScale(1, RoundingMode.HALF_UP).doubleValue();
+        // A direct UPDATE: the chef object loaded with the order may hold an outdated rating.
+        chefRepository.updateRating(chef.getId(), rating);
     }
 
     private static String normalizeComment(String comment) {
