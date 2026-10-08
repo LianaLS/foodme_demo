@@ -23,6 +23,7 @@ jobs:
         uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          show_full_output: true
           prompt: |
             REPO: ${{ github.repository }}
             PR NUMBER: ${{ github.event.pull_request.number }}
@@ -45,8 +46,32 @@ jobs:
                taken from current app behaviour instead of the requirement.
             5. Flakiness risks - timing, shared test data, test order.
 
-            Post ONE comment on the PR with `gh pr comment` containing:
-            a short verdict, a table (Test file | Finding | Severity |
-            Suggestion), and a list of missing test cases.
-            Do not change any code.
-          claude_args: '--allowedTools "Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*)"'
+            Severity: High, Medium or Low.
+            High = new or changed behaviour with no test at all, a test that
+            can never fail, or page.waitForTimeout().
+            Gate rule: FAIL if there is at least one High finding.
+            If the PR changes no application code and no tests (only docs,
+            workflows or config), PASS.
+
+            Post ONE comment on the PR with `gh pr comment`. Its first line
+            is "Test review: PASS" or "Test review: FAIL", then a short
+            verdict, a table (Test file | Finding | Severity | Suggestion),
+            and a list of missing test cases.
+
+            Finally use the Write tool to create the file gate-result.txt
+            that contains only the word PASS or FAIL.
+            Do not change any other file.
+          claude_args: '--allowedTools "Read,Write,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*)"'
+
+      - name: Quality gate
+        run: |
+          if [ -f gate-result.txt ]; then
+            RESULT=$(tr -d '[:space:]' < gate-result.txt)
+          else
+            RESULT=MISSING
+          fi
+          echo "Gate result: $RESULT"
+          if [ "$RESULT" != "PASS" ]; then
+            echo "::error::Test review did not pass (result: $RESULT). See Claude's comment on the PR."
+            exit 1
+          fi
