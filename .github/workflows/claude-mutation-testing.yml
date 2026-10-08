@@ -31,6 +31,7 @@ jobs:
         uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          show_full_output: true
           prompt: |
             REPO: ${{ github.repository }}
             PR NUMBER: ${{ github.event.pull_request.number }}
@@ -39,7 +40,8 @@ jobs:
 
             1. Read the PR changes with `gh pr diff`. Pick the changed Java
                production code under apps/backend/src/main (not tests).
-               If there is none, post a comment saying so and stop.
+               If there is none, post a comment saying so, the result is PASS,
+               and go straight to the last step.
             2. Create at most 8 mutants, ONE at a time. Prefer mutations that
                matter for the business rules: change a boundary (< to <=,
                5 to 6), flip a condition, remove a check, return a wrong
@@ -53,8 +55,28 @@ jobs:
                   `git status` is clean before the next mutant.
             4. Mutation score = killed / total.
 
-            Post ONE comment on the PR with `gh pr comment` containing:
-            the mutation score, a table (# | File:line | Mutation | Result),
-            and for every SURVIVED mutant the test case that would kill it.
+            Gate rule: FAIL if the mutation score is below 70%. Otherwise PASS.
+
+            Post ONE comment on the PR with `gh pr comment`. Its first line
+            is "Mutation testing: PASS" or "Mutation testing: FAIL", then the
+            mutation score, a table (# | File:line | Mutation | Result), and
+            for every SURVIVED mutant the test case that would kill it.
             Never commit or push anything.
-          claude_args: '--max-turns 80 --allowedTools "Edit,Read,Glob,Grep,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(./apps/backend/gradlew:*),Bash(git checkout:*),Bash(git status:*),Bash(git diff:*)"'
+
+            Last step, after every mutant is undone: use the Write tool to
+            create the file gate-result.txt that contains only the word
+            PASS or FAIL.
+          claude_args: '--max-turns 80 --allowedTools "Edit,Read,Write,Glob,Grep,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(./apps/backend/gradlew:*),Bash(git checkout:*),Bash(git status:*),Bash(git diff:*)"'
+
+      - name: Quality gate
+        run: |
+          if [ -f gate-result.txt ]; then
+            RESULT=$(tr -d '[:space:]' < gate-result.txt)
+          else
+            RESULT=MISSING
+          fi
+          echo "Gate result: $RESULT"
+          if [ "$RESULT" != "PASS" ]; then
+            echo "::error::Mutation testing did not pass (result: $RESULT). See Claude's comment on the PR."
+            exit 1
+          fi

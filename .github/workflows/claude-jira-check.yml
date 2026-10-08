@@ -1,0 +1,97 @@
+name: Claude Jira Check
+
+on:
+  pull_request:
+    types: [opened, synchronize, ready_for_review, reopened]
+
+jobs:
+  jira-check:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: read
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Find the Jira key in the PR title or branch name
+        id: key
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          BRANCH: ${{ github.head_ref }}
+        run: |
+          KEY=$(printf '%s %s' "$PR_TITLE" "$BRANCH" | grep -oE '[A-Z][A-Z0-9]+-[0-9]+' | head -n 1 || true)
+          if [ -z "$KEY" ]; then
+            echo "::error::No Jira key (for example SCRUM-7) in the PR title or branch name."
+            exit 1
+          fi
+          echo "Jira key: $KEY"
+          echo "key=$KEY" >> "$GITHUB_OUTPUT"
+
+      - name: Download the Jira ticket
+        env:
+          JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
+          JIRA_EMAIL: ${{ secrets.JIRA_EMAIL }}
+          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+          KEY: ${{ steps.key.outputs.key }}
+        run: |
+          curl --fail --silent --show-error \
+            -u "$JIRA_EMAIL:$JIRA_API_TOKEN" \
+            -H "Accept: application/json" \
+            "$JIRA_BASE_URL/rest/api/3/issue/$KEY?fields=summary,description,status,issuetype,labels" \
+            -o jira-ticket.json
+          echo "Downloaded $KEY"
+
+      - name: Compare the Jira ticket with the git diff
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          show_full_output: true
+          prompt: |
+            REPO: ${{ github.repository }}
+            PR NUMBER: ${{ github.event.pull_request.number }}
+            JIRA KEY: ${{ steps.key.outputs.key }}
+
+            You are a QA engineer. Check that this pull request does what
+            the Jira ticket asks for.
+
+            1. Read jira-ticket.json - the Jira ticket. The description is in
+               Atlassian Document Format (JSON); read the text inside it.
+               Take the acceptance criteria and user stories from it.
+               The ticket is the ONLY source of requirements - do not use
+               spec files or other documents from the PR as requirements.
+            2. Read the changes with `gh pr diff`.
+            3. For every acceptance criterion decide: Done, Partly done,
+               Missing, or Cannot verify from the diff. Give file:line evidence.
+            4. List changes in the diff that the ticket does not ask for.
+
+            Gate rule: FAIL if any acceptance criterion is Missing, or the
+            diff has nothing to do with the ticket. Otherwise PASS.
+
+            Post ONE comment on the PR with `gh pr comment`. Its first line
+            is "Jira check: PASS" or "Jira check: FAIL". Then the ticket key
+            and summary, a table (Acceptance criterion | Status | Evidence),
+            and a "Not in the ticket" section.
+
+            Finally use the Write tool to create the file gate-result.txt
+            that contains only the word PASS or FAIL.
+            Do not change any other file.
+          claude_args: '--allowedTools "Read,Write,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*)"'
+
+      - name: Quality gate
+        run: |
+          if [ -f gate-result.txt ]; then
+            RESULT=$(tr -d '[:space:]' < gate-result.txt)
+          else
+            RESULT=MISSING
+          fi
+          echo "Gate result: $RESULT"
+          if [ "$RESULT" != "PASS" ]; then
+            echo "::error::Jira check did not pass (result: $RESULT). See Claude's comment on the PR."
+            exit 1
+          fi

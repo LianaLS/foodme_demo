@@ -44,10 +44,31 @@ jobs:
             4. Performance - N+1 queries, needless loops or requests.
             5. Readability - only if it really hurts understanding.
 
+            Severity: Critical, High, Medium or Low.
+            Gate rule: FAIL if there is at least one Critical or High problem.
+            Otherwise PASS.
+
             For each real problem, post an inline comment on the exact line
             with mcp__github_inline_comment__create_inline_comment.
-            Then post ONE summary comment on the PR with `gh pr comment`:
-            a short verdict and a table (File:line | Problem | Severity).
+            Then post ONE summary comment on the PR with `gh pr comment`.
+            Its first line is "Code review: PASS" or "Code review: FAIL",
+            then a short verdict and a table (File:line | Problem | Severity).
             If you find nothing serious, say so in the summary.
-            Do not change any code.
-          claude_args: '--allowedTools "mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*)"'
+
+            Finally use the Write tool to create the file gate-result.txt
+            that contains only the word PASS or FAIL.
+            Do not change any other file.
+          claude_args: '--allowedTools "Read,Write,mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*)"'
+
+      - name: Quality gate
+        run: |
+          if [ -f gate-result.txt ]; then
+            RESULT=$(tr -d '[:space:]' < gate-result.txt)
+          else
+            RESULT=MISSING
+          fi
+          echo "Gate result: $RESULT"
+          if [ "$RESULT" != "PASS" ]; then
+            echo "::error::Code review did not pass (result: $RESULT). See Claude's comments on the PR."
+            exit 1
+          fi
