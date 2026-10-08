@@ -3,6 +3,7 @@ package am.foodme.backend;
 import am.foodme.backend.model.Order;
 import am.foodme.backend.repository.ChefRepository;
 import am.foodme.backend.repository.OrderRepository;
+import am.foodme.backend.repository.OrderReviewRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +15,16 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
@@ -53,6 +61,9 @@ class OrderReviewControllerTest {
 
     @Autowired
     private ChefRepository chefRepository;
+
+    @Autowired
+    private OrderReviewRepository orderReviewRepository;
 
     private String customerToken() throws Exception {
         String email = "review-test-" + UUID.randomUUID() + "@example.com";
@@ -243,5 +254,43 @@ class OrderReviewControllerTest {
         mockMvc.perform(get("/api/order/number/" + number))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.review").doesNotExist());
+    }
+
+    /**
+     * SCRUM-8: two customers rate the same chef at the same moment. Whatever the order,
+     * the chef rating must equal the average of all saved ratings. Repeated a few times,
+     * because a race does not show up on every run.
+     */
+    @Test
+    void parallelRatings_forTheSameChef_keepTheRatingEqualToTheAverage() throws Exception {
+        ExecutorService pool = Executors.newFixedThreadPool(2);
+        try {
+            for (int round = 0; round < 10; round++) {
+                String tokenA = customerToken();
+                String tokenB = customerToken();
+                String orderA = deliveredOrder(tokenA, CHEF_1, CHEF_1_DISH);
+                String orderB = deliveredOrder(tokenB, CHEF_1, CHEF_1_DISH);
+
+                CountDownLatch start = new CountDownLatch(1);
+                Future<Integer> a = pool.submit(() -> {
+                    start.await();
+                    return review(tokenA, orderA, 1, null).andReturn().getResponse().getStatus();
+                });
+                Future<Integer> b = pool.submit(() -> {
+                    start.await();
+                    return review(tokenB, orderB, 3, null).andReturn().getResponse().getStatus();
+                });
+                start.countDown();
+                assertEquals(200, a.get(30, TimeUnit.SECONDS));
+                assertEquals(200, b.get(30, TimeUnit.SECONDS));
+
+                double expected = BigDecimal.valueOf(orderReviewRepository.averageStarsForChef(CHEF_1))
+                        .setScale(1, RoundingMode.HALF_UP).doubleValue();
+                assertEquals(expected, chefRepository.findById(CHEF_1).orElseThrow().getRating(),
+                        "round " + round);
+            }
+        } finally {
+            pool.shutdownNow();
+        }
     }
 }
