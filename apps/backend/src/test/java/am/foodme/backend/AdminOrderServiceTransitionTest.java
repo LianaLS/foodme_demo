@@ -34,7 +34,7 @@ class AdminOrderServiceTransitionTest {
         service = new AdminOrderService(orderRepository);
         order = new Order();
         order.setId(1L);
-        when(orderRepository.findById(1L)).thenReturn(Optional.of(order));
+        when(orderRepository.findByIdForUpdate(1L)).thenReturn(Optional.of(order));
         when(orderRepository.save(any(Order.class))).thenAnswer(inv -> inv.getArgument(0));
     }
 
@@ -67,6 +67,13 @@ class AdminOrderServiceTransitionTest {
             "DELIVERED, REJECTED",
             "DELIVERED, DELIVERED",
             "NEW, CANCELLED",
+            "ACCEPTED, CANCELLED",
+            // SCRUM-9 AC-4: a cancelled order is final.
+            "CANCELLED, NEW",
+            "CANCELLED, ACCEPTED",
+            "CANCELLED, DELIVERED",
+            "CANCELLED, REJECTED",
+            "CANCELLED, CANCELLED",
     })
     void invalidTransitions(String from, String to) {
         order.setStatus(from);

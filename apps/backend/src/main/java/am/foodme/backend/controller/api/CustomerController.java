@@ -5,6 +5,7 @@ import am.foodme.backend.dto.OrderDto;
 import am.foodme.backend.dto.OrderListResponseDto;
 import am.foodme.backend.dto.OrderReviewRequestDto;
 import am.foodme.backend.service.CustomerAuthService;
+import am.foodme.backend.service.OrderCancellationService;
 import am.foodme.backend.service.OrderReviewService;
 import am.foodme.backend.service.OrderService;
 import am.foodme.backend.utils.ControllerUtil;
@@ -25,12 +26,20 @@ public class CustomerController {
     private final CustomerAuthService customerAuthService;
     private final OrderService orderService;
     private final OrderReviewService orderReviewService;
+    private final OrderCancellationService orderCancellationService;
 
     public CustomerController(CustomerAuthService customerAuthService, OrderService orderService,
-                              OrderReviewService orderReviewService) {
+                              OrderReviewService orderReviewService,
+                              OrderCancellationService orderCancellationService) {
         this.customerAuthService = customerAuthService;
         this.orderService = orderService;
         this.orderReviewService = orderReviewService;
+        this.orderCancellationService = orderCancellationService;
+    }
+
+    @PostMapping("/orders/{number}/cancel")
+    public OrderDto cancelOrder(@PathVariable String number, Authentication authentication) {
+        return orderCancellationService.cancelOrder(number, authentication.getName());
     }
 
     @PostMapping("/orders/{number}/review")

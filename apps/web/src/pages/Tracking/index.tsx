@@ -1,8 +1,10 @@
+import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { Check, ChefHat, Package, Truck, X } from "lucide-react";
 import { foodmeApi } from "@/api/foodme";
 import { Button } from "@/components/ui/button";
+import { CancelOrderDialog } from "@/components/sections/cancel-order-dialog";
 import { StarRatingDisplay } from "@/components/sections/star-rating";
 import { formatAmd } from "@/lib/utils";
 import { useAuth } from "@/providers/auth-provider";
@@ -30,10 +32,14 @@ const STATUS_COPY: Record<string, { title: string; detail: string }> = {
     title: "Order declined",
     detail: "This order couldn’t be fulfilled. Contact support if you need help.",
   },
+  CANCELLED: {
+    title: "Order cancelled",
+    detail: "You cancelled this order.",
+  },
 };
 
 function stepIndex(status: string): number {
-  if (status === "REJECTED") return -1;
+  if (status === "REJECTED" || status === "CANCELLED") return -1;
   const i = STEPS.findIndex((s) => s.key === status);
   return i >= 0 ? i : 0;
 }
@@ -41,6 +47,7 @@ function stepIndex(status: string): number {
 export default function Tracking() {
   const { number } = useParams<{ number: string }>();
   const { isAuthenticated } = useAuth();
+  const [cancelOpen, setCancelOpen] = useState(false);
 
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["order", number],
@@ -87,6 +94,8 @@ export default function Tracking() {
   };
   const active = stepIndex(data.status);
   const rejected = data.status === "REJECTED";
+  // SCRUM-9: a cancelled order is closed, never "in progress", so it gets no progress bar.
+  const cancelled = data.status === "CANCELLED";
 
   return (
     <div className="tp_wrap mx-auto max-w-7xl px-4 py-10 md:px-8 md:py-14">
@@ -105,9 +114,14 @@ export default function Tracking() {
 
       <div className="bezel-outer shadow-diffuse mt-8 animate-fade-up [animation-delay:60ms]">
         <div className="bezel-inner p-5 md:p-6">
-          {rejected ? (
+          {rejected || cancelled ? (
             <div className="flex items-start gap-3">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-50 text-red-600 ring-1 ring-red-100">
+              <div
+                className={[
+                  "flex h-10 w-10 shrink-0 items-center justify-center rounded-full ring-1",
+                  cancelled ? "bg-zinc-100 text-zinc-500 ring-zinc-200" : "bg-red-50 text-red-600 ring-red-100",
+                ].join(" ")}
+              >
                 <X size={18} strokeWidth={2} />
               </div>
               <div>
@@ -174,6 +188,15 @@ export default function Tracking() {
         </div>
       </div>
 
+      {/* SCRUM-9: signed-in customers can cancel while the kitchen hasn't accepted yet. */}
+      {isAuthenticated && data.status === "NEW" && (
+        <div className="mt-4 flex justify-end">
+          <Button variant="outline" className="rounded-full" onClick={() => setCancelOpen(true)}>
+            Cancel order
+          </Button>
+        </div>
+      )}
+
       <div className="bezel-outer shadow-diffuse mt-5 animate-fade-up [animation-delay:120ms]">
         <div className="bezel-inner overflow-hidden">
           <div className="border-b border-zinc-100 px-5 py-3.5">
@@ -220,6 +243,8 @@ export default function Tracking() {
         </div>
       )}
       </div>
+
+      <CancelOrderDialog orderNumber={cancelOpen ? data.number : null} onOpenChange={setCancelOpen} />
     </div>
   );
 }

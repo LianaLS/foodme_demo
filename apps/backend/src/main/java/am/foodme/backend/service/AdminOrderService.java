@@ -50,7 +50,10 @@ public class AdminOrderService {
 
     @Transactional
     public OrderDto updateStatus(Long id, String newStatus, String rejectReason) {
-        Order order = findEntity(id);
+        // SCRUM-9: locked like a customer cancel, so the two never overwrite each other.
+        // CANCELLED has no entry in ALLOWED_TRANSITIONS, so a cancelled order is final.
+        Order order = orderRepository.findByIdForUpdate(id)
+                .orElseThrow(() -> new NotFoundException("Order " + id + " not found"));
         Set<String> allowed = ALLOWED_TRANSITIONS.get(order.getStatus());
         if (allowed == null || !allowed.contains(newStatus)) {
             throw new BadRequestException("Cannot transition order from " + order.getStatus() + " to " + newStatus);

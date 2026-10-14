@@ -73,7 +73,8 @@ const Dashboard = () => {
     });
 
     const recentRevenue = recentOrders
-        .filter((o) => o.status !== OrderStatus.REJECTED)
+        // SCRUM-9 AC-5: declined and cancelled orders bring no revenue.
+        .filter((o) => o.status !== OrderStatus.REJECTED && o.status !== OrderStatus.CANCELLED)
         .reduce((sum, o) => sum + (o.totalPrice ?? 0), 0);
 
     const statusCounts = recentOrders.reduce((acc, o) => {
