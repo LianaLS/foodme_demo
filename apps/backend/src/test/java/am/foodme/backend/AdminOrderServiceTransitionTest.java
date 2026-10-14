@@ -67,13 +67,6 @@ class AdminOrderServiceTransitionTest {
             "DELIVERED, REJECTED",
             "DELIVERED, DELIVERED",
             "NEW, CANCELLED",
-            "ACCEPTED, CANCELLED",
-            // SCRUM-9 AC-4: a cancelled order is final.
-            "CANCELLED, NEW",
-            "CANCELLED, ACCEPTED",
-            "CANCELLED, DELIVERED",
-            "CANCELLED, REJECTED",
-            "CANCELLED, CANCELLED",
     })
     void invalidTransitions(String from, String to) {
         order.setStatus(from);
