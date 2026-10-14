@@ -74,6 +74,9 @@ A requirement changes when a gap is answered, or a human corrects, adds or remov
 
 4. Never post to Jira before approval, and never combine several changes into one comment.
 
+5. Write each Jira comment in three languages: English first (as above), then Russian ("RU — Изменение требования CHG-xx": Было / Стало / Причина), then Armenian ("HY — Պահանջի փոփոխություն CHG-xx": Առաջ / Հետո / Պատճառ). Keep UI and error texts in English in every language, word for word.
+
+
 ## Rules
 - Jira only through the Atlassian MCP tools: `getJiraIssue` to read the issue, `addOrEditJiraIssueComment` to post a comment.
 - Never reach Jira any other way: no curl, no REST API calls, no scripts, no API tokens, no browser.
