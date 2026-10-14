@@ -82,6 +82,11 @@ const OrderDetails = () => {
                         color={OrderStatusColors[record.status] ?? 'default'}
                     />
                 </Stack>
+                {record.status === OrderStatus.CANCELLED && (
+                    <Typography color="text.secondary" sx={{ mb: 2 }}>
+                        Cancelled by customer
+                    </Typography>
+                )}
 
                 <Grid container spacing={2} sx={{ mb: 2 }}>
                     <Grid item xs={6}>

@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { ChevronRight, Package, Star } from "lucide-react";
+import { ChevronRight, Package, Star, X } from "lucide-react";
 import { foodmeApi } from "@/api/foodme";
 import { Button } from "@/components/ui/button";
+import { CancelOrderDialog } from "@/components/sections/cancel-order-dialog";
 import { RateOrderDialog } from "@/components/sections/rate-order-dialog";
 import { StarRatingDisplay } from "@/components/sections/star-rating";
 import { useAuth } from "@/providers/auth-provider";
@@ -14,12 +15,15 @@ const STATUS_LABEL: Record<string, string> = {
   ACCEPTED: "Preparing",
   DELIVERED: "Delivered",
   REJECTED: "Declined",
+  CANCELLED: "Cancelled",
 };
 
 function statusClass(status: string) {
   if (status === "DELIVERED") return "bg-emerald-50 text-emerald-800 ring-emerald-100";
   if (status === "REJECTED") return "bg-red-50 text-red-700 ring-red-100";
   if (status === "ACCEPTED") return "bg-amber-50 text-amber-800 ring-amber-100";
+  // SCRUM-9: neutral grey, set apart from the red "Declined" and the "Received" chip.
+  if (status === "CANCELLED") return "bg-zinc-200 text-zinc-600 ring-zinc-300";
   return "bg-zinc-100 text-zinc-700 ring-zinc-200/80";
 }
 
@@ -36,6 +40,7 @@ function formatOrderDate(value: string) {
 export default function Orders() {
   const { isAuthenticated, customer, logout } = useAuth();
   const [ratingOrder, setRatingOrder] = useState<string | null>(null);
+  const [cancellingOrder, setCancellingOrder] = useState<string | null>(null);
 
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["my-orders", customer?.id],
@@ -124,6 +129,20 @@ export default function Orders() {
                   </div>
                 </div>
               </Link>
+              {/* SCRUM-9: only orders the kitchen hasn't accepted yet can be cancelled. */}
+              {order.status === "NEW" && (
+                <div className="flex min-h-12 items-center justify-end border-t border-zinc-100 px-5 py-2.5">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    aria-label={`Cancel order ${order.number}`}
+                    onClick={() => setCancellingOrder(order.number)}
+                  >
+                    <X strokeWidth={2} />
+                    Cancel order
+                  </Button>
+                </div>
+              )}
               {/* R14/R15/R17: only delivered orders get a rating row, outside the link. */}
               {order.status === "DELIVERED" && (
                 <div className="flex min-h-12 flex-wrap items-center justify-between gap-2 border-t border-zinc-100 px-5 py-2.5">
@@ -155,6 +174,13 @@ export default function Orders() {
           ))}
         </ul>
       )}
+
+      <CancelOrderDialog
+        orderNumber={cancellingOrder}
+        onOpenChange={(open) => {
+          if (!open) setCancellingOrder(null);
+        }}
+      />
 
       <RateOrderDialog
         orderNumber={ratingOrder}

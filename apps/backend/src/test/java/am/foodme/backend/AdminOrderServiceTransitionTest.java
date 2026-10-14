@@ -34,7 +34,7 @@ class AdminOrderServiceTransitionTest {
         service = new AdminOrderService(orderRepository);
         order = new Order();
         order.setId(1L);
-        when(orderRepository.findById(1L)).thenReturn(Optional.of(order));
+        when(orderRepository.findByIdForUpdate(1L)).thenReturn(Optional.of(order));
         when(orderRepository.save(any(Order.class))).thenAnswer(inv -> inv.getArgument(0));
     }
 

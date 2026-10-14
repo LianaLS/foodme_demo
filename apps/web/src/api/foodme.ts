@@ -50,4 +50,7 @@ export const foodmeApi = {
 
   reviewOrder: (number: string, payload: OrderReviewRequest) =>
     apiClient.post<FullOrderDto>(`/api/customer/orders/${encodeURIComponent(number)}/review`, payload),
+
+  cancelOrder: (number: string) =>
+    apiClient.post<FullOrderDto>(`/api/customer/orders/${encodeURIComponent(number)}/cancel`, {}),
 };
