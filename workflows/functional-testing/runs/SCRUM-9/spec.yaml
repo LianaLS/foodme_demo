@@ -81,7 +81,7 @@ requirements:
     text: A cancelled order has no Accept, Deliver or Reject buttons in the admin panel.
     source: "Users (operations); KAN-14"
   - id: REQ-SCRUM-9-24
-    text: The admin dashboard "Recent revenue" figure does not include cancelled orders.
+    text: The admin dashboard "Recent revenue" figure does not include cancelled orders. Orders in Received, Accepted and Delivered status are included.
     source: "Scope; AC-5; KAN-14"
   - id: REQ-SCRUM-9-25
     text: The admin dashboard "Recent revenue" figure does not include declined orders.
@@ -206,6 +206,11 @@ gaps:
     question: How must the tracking progress bar look for a cancelled order (REQ-SCRUM-9-18 says only "not shown as in progress")? Raised by the case judge, TC-SCRUM-9-23 UNSURE.
     status: answered
     answer: "No step of the progress bar is shown as the current step, and the status title is \"Cancelled\"; whether the bar is shown at all is not specified. (CHG-16)"
+
+  - id: GAP-14
+    question: Which order statuses count towards the "Recent revenue" figure? The spec only says Cancelled and Declined do not (raised by the case judge, no positive partition could be designed).
+    status: answered
+    answer: "Received, Accepted and Delivered orders are included; Cancelled and Declined are not. (CHG-17)"
 
 changes:
   - id: CHG-01
@@ -336,3 +341,11 @@ changes:
     approved_by: Liana Sarajyan
     date: 2026-10-14
     jira_comment: "10081"
+  - id: CHG-17
+    requirement: REQ-SCRUM-9-24
+    old: "The admin dashboard \"Recent revenue\" figure does not include cancelled orders."
+    new: "The admin dashboard \"Recent revenue\" figure does not include cancelled orders. Orders in Received, Accepted and Delivered status are included."
+    reason: GAP-14 answered (raised by the case judge)
+    approved_by: Liana Sarajyan
+    date: 2026-10-14
+    jira_comment: "10083"

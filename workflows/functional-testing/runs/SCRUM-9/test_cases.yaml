@@ -1,8 +1,9 @@
 # Step 03 Test cases — traceability for SCRUM-9.
 # The test cases themselves live in Qase (project FML, suite 6); this file maps them to the test basis.
 feature: SCRUM-9
-test_basis: spec.yaml (CHG-01…CHG-16), plan.md v1.0 (approved 2026-10-14)
+test_basis: spec.yaml (CHG-01…CHG-17), plan.md v1.0 (approved 2026-10-14)
 revision: "2 — after case judge verdict FAIL (case_verdict.json, Jira comment 10080): 14 cases updated in Qase, 3 added (TC-35…37)"
+revision_3: "after re-judge FAIL 32/5/0 (Jira comment 10082): TC-24, 28, 36, 37 updated; TC-07 deprecated in Qase (duplicate of TC-06 step 2); TC-38 added (positive revenue partition, CHG-17)"
 qase:
   project: FML
   suite_id: 6
@@ -59,6 +60,7 @@ test_cases:
     technique: decision table
   - id: TC-SCRUM-9-07
     qase_id: 22
+    status: deprecated   # duplicate of TC-SCRUM-9-06 step 2; not counted in coverage
     title: "API: cancelling an unknown order number returns 404"
     requirements: [REQ-SCRUM-9-04]
     risk: RSK-SCRUM-9-01
@@ -305,12 +307,20 @@ test_cases:
     priority: Medium
     level: UI
     technique: checklist
+  - id: TC-SCRUM-9-38
+    qase_id: 53
+    title: "UI admin: a Received order is included in Recent revenue"
+    requirements: [REQ-SCRUM-9-24]
+    risk: RSK-SCRUM-9-05
+    priority: Medium
+    level: UI
+    technique: equivalence partitioning
 
 coverage:
   REQ-SCRUM-9-01: [TC-SCRUM-9-01, TC-SCRUM-9-20]
   REQ-SCRUM-9-02: [TC-SCRUM-9-01, TC-SCRUM-9-20, TC-SCRUM-9-34]
   REQ-SCRUM-9-03: [TC-SCRUM-9-02, TC-SCRUM-9-03, TC-SCRUM-9-04, TC-SCRUM-9-12, TC-SCRUM-9-27]
-  REQ-SCRUM-9-04: [TC-SCRUM-9-06, TC-SCRUM-9-07, TC-SCRUM-9-25, TC-SCRUM-9-36]
+  REQ-SCRUM-9-04: [TC-SCRUM-9-06, TC-SCRUM-9-25, TC-SCRUM-9-36]
   REQ-SCRUM-9-05: [TC-SCRUM-9-08, TC-SCRUM-9-24]
   REQ-SCRUM-9-06: [TC-SCRUM-9-05, TC-SCRUM-9-16]
   REQ-SCRUM-9-07: [TC-SCRUM-9-09, TC-SCRUM-9-29]
@@ -330,7 +340,7 @@ coverage:
   REQ-SCRUM-9-21: [TC-SCRUM-9-13, TC-SCRUM-9-14, TC-SCRUM-9-30]
   REQ-SCRUM-9-22: [TC-SCRUM-9-28, TC-SCRUM-9-29]
   REQ-SCRUM-9-23: [TC-SCRUM-9-29]
-  REQ-SCRUM-9-24: [TC-SCRUM-9-31]
+  REQ-SCRUM-9-24: [TC-SCRUM-9-31, TC-SCRUM-9-38]
   REQ-SCRUM-9-25: [TC-SCRUM-9-32]
   REQ-SCRUM-9-26: [TC-SCRUM-9-04, TC-SCRUM-9-16]
   REQ-SCRUM-9-27: [TC-SCRUM-9-34]
