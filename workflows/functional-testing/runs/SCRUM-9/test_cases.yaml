@@ -1,7 +1,8 @@
 # Step 03 Test cases — traceability for SCRUM-9.
 # The test cases themselves live in Qase (project FML, suite 6); this file maps them to the test basis.
 feature: SCRUM-9
-test_basis: spec.yaml (commit f6616ab), plan.md v1.0 (approved 2026-10-14)
+test_basis: spec.yaml (CHG-01…CHG-16), plan.md v1.0 (approved 2026-10-14)
+revision: "2 — after case judge verdict FAIL (case_verdict.json, Jira comment 10080): 14 cases updated in Qase, 3 added (TC-35…37)"
 qase:
   project: FML
   suite_id: 6
@@ -215,7 +216,7 @@ test_cases:
     risk: RSK-SCRUM-9-02
     priority: High
     level: UI
-    technique: decision table
+    technique: state transition
   - id: TC-SCRUM-9-27
     qase_id: 42
     title: "UI: kitchen accepts while the confirmation is open — reason shown, real status loaded"
@@ -280,12 +281,36 @@ test_cases:
     priority: Medium
     level: UI
     technique: checklist
+  - id: TC-SCRUM-9-35
+    qase_id: 50
+    title: "UI: tracking page shows no cancel button for Delivered and Declined orders"
+    requirements: [REQ-SCRUM-9-12]
+    risk: RSK-SCRUM-9-02
+    priority: High
+    level: UI
+    technique: state transition
+  - id: TC-SCRUM-9-36
+    qase_id: 51
+    title: "API: another customer cancelling someone else's Accepted order gets 404, not 400"
+    requirements: [REQ-SCRUM-9-04]
+    risk: RSK-SCRUM-9-01
+    priority: High
+    level: API
+    technique: decision table
+  - id: TC-SCRUM-9-37
+    qase_id: 52
+    title: "UI admin: cancelled order details show Cancelled in its own colour"
+    requirements: [REQ-SCRUM-9-20]
+    risk: RSK-SCRUM-9-06
+    priority: Medium
+    level: UI
+    technique: checklist
 
 coverage:
   REQ-SCRUM-9-01: [TC-SCRUM-9-01, TC-SCRUM-9-20]
   REQ-SCRUM-9-02: [TC-SCRUM-9-01, TC-SCRUM-9-20, TC-SCRUM-9-34]
   REQ-SCRUM-9-03: [TC-SCRUM-9-02, TC-SCRUM-9-03, TC-SCRUM-9-04, TC-SCRUM-9-12, TC-SCRUM-9-27]
-  REQ-SCRUM-9-04: [TC-SCRUM-9-06, TC-SCRUM-9-07, TC-SCRUM-9-25]
+  REQ-SCRUM-9-04: [TC-SCRUM-9-06, TC-SCRUM-9-07, TC-SCRUM-9-25, TC-SCRUM-9-36]
   REQ-SCRUM-9-05: [TC-SCRUM-9-08, TC-SCRUM-9-24]
   REQ-SCRUM-9-06: [TC-SCRUM-9-05, TC-SCRUM-9-16]
   REQ-SCRUM-9-07: [TC-SCRUM-9-09, TC-SCRUM-9-29]
@@ -293,7 +318,7 @@ coverage:
   REQ-SCRUM-9-09: []   # out of scope (plan §2, CHG-12)
   REQ-SCRUM-9-10: [TC-SCRUM-9-15]
   REQ-SCRUM-9-11: [TC-SCRUM-9-22, TC-SCRUM-9-24, TC-SCRUM-9-25]
-  REQ-SCRUM-9-12: [TC-SCRUM-9-16, TC-SCRUM-9-26]
+  REQ-SCRUM-9-12: [TC-SCRUM-9-16, TC-SCRUM-9-26, TC-SCRUM-9-35]
   REQ-SCRUM-9-13: [TC-SCRUM-9-17]
   REQ-SCRUM-9-14: [TC-SCRUM-9-18, TC-SCRUM-9-19]
   REQ-SCRUM-9-15: [TC-SCRUM-9-20, TC-SCRUM-9-22, TC-SCRUM-9-34]
@@ -301,7 +326,7 @@ coverage:
   REQ-SCRUM-9-17: [TC-SCRUM-9-12, TC-SCRUM-9-27]
   REQ-SCRUM-9-18: [TC-SCRUM-9-23]
   REQ-SCRUM-9-19: [TC-SCRUM-9-20, TC-SCRUM-9-22, TC-SCRUM-9-23, TC-SCRUM-9-28]
-  REQ-SCRUM-9-20: [TC-SCRUM-9-28, TC-SCRUM-9-29]
+  REQ-SCRUM-9-20: [TC-SCRUM-9-28, TC-SCRUM-9-29, TC-SCRUM-9-37]
   REQ-SCRUM-9-21: [TC-SCRUM-9-13, TC-SCRUM-9-14, TC-SCRUM-9-30]
   REQ-SCRUM-9-22: [TC-SCRUM-9-28, TC-SCRUM-9-29]
   REQ-SCRUM-9-23: [TC-SCRUM-9-29]

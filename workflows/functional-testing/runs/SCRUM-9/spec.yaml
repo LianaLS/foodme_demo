@@ -61,7 +61,7 @@ requirements:
     text: If the kitchen accepted the order just before the customer confirmed the cancellation, the page shows the reason, which is the refusal message "Only new orders can be cancelled." (REQ-SCRUM-9-03), and refreshes the order so its real status is shown.
     source: "KAN-13; AC-2"
   - id: REQ-SCRUM-9-18
-    text: The tracking progress bar does not show a cancelled order as in progress.
+    text: "The tracking progress bar does not show a cancelled order as in progress: no step of the progress bar is shown as the current step, and the status title is \"Cancelled\". Whether the bar is shown at all is not specified."
     source: "KAN-13"
   # Labelling everywhere (AC-3)
   - id: REQ-SCRUM-9-19
@@ -202,6 +202,11 @@ gaps:
     status: answered
     answer: "All phones and desktop screens in common use now; the exact device list is set in the test plan (step 02). (CHG-15)"
 
+  - id: GAP-13
+    question: How must the tracking progress bar look for a cancelled order (REQ-SCRUM-9-18 says only "not shown as in progress")? Raised by the case judge, TC-SCRUM-9-23 UNSURE.
+    status: answered
+    answer: "No step of the progress bar is shown as the current step, and the status title is \"Cancelled\"; whether the bar is shown at all is not specified. (CHG-16)"
+
 changes:
   - id: CHG-01
     requirement: REQ-SCRUM-9-19
@@ -323,3 +328,11 @@ changes:
     approved_by: Liana Sarajyan
     date: 2026-10-14
     jira_comment: "10047"
+  - id: CHG-16
+    requirement: REQ-SCRUM-9-18
+    old: "The tracking progress bar does not show a cancelled order as in progress."
+    new: "The tracking progress bar does not show a cancelled order as in progress: no step of the progress bar is shown as the current step, and the status title is \"Cancelled\". Whether the bar is shown at all is not specified."
+    reason: GAP-13 answered (raised by the case judge)
+    approved_by: Liana Sarajyan
+    date: 2026-10-14
+    jira_comment: "10081"
