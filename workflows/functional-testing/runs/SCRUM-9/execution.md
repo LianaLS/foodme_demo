@@ -81,7 +81,9 @@
 - **TC-SCRUM-9-31, 32, 38 — "Recent revenue" (REQ-SCRUM-9-24, 25).** The dashboard figure is the sum over the **latest 100 orders** only. Each new order pushes the oldest one out of the window, so "R2 = R1" or "R2 = R1 + T" cannot be observed on a database with more than 100 orders (measured: 464,450 → 458,950 after a new 6,000 AMD order pushed out FM-100005 of 11,500). The first readings (474,250) came from a cached page and are not used. Supporting observation, not a pass: at every reading the dashboard value equalled the sum of the latest 100 orders without Cancelled and Declined, computed from the admin API. See TW-02.
 - **TC-SCRUM-9-34 — main flow on devices (REQ-SCRUM-9-27).** Passed on Desktop 1920×1080, Laptop 1366×768, Pixel 7, Galaxy S24 (Chromium), and on the iPhone 15 and iPad viewport sizes in Chromium (FM-100109…114, all TAKEAWAY / CANCELLED). **Blocked part:** iPhone 15 and iPad require WebKit (plan §6), which the Playwright MCP browser does not provide → to be covered by the automated run (step 08).
 
-## 6. Proposed defects (not filed — waiting for the human's decision)
+## 6. Defects
+
+Filed 2026-10-15 after the human's approval as **one subtask** of SCRUM-9: [SCRUM-10](https://liana-qa.atlassian.net/browse/SCRUM-10) (Subtask, label `bug`, priority Low) — contains DEF-01 … DEF-04 below.
 
 ### DEF-01 — Tracking page shows "Order cancelled" and extra text instead of the status title "Cancelled"
 - **Severity / priority:** Minor / Low
