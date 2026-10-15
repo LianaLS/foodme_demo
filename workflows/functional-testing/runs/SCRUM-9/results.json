@@ -1,0 +1,595 @@
+{
+  "config": {
+    "argv": [
+      "C:\\Program Files\\nodejs\\node.exe",
+      "C:\\Users\\admin\\Desktop\\foodme_demo\\apps\\web\\node_modules\\@playwright\\test\\cli.js",
+      "test",
+      "e2e/scrum-9-cancel-order.spec.ts",
+      "e2e/api/scrum-9-cancel-order.api.spec.ts",
+      "--reporter=list,json"
+    ],
+    "configFile": "C:\\Users\\admin\\Desktop\\foodme_demo\\apps\\web\\playwright.config.ts",
+    "rootDir": "C:/Users/admin/Desktop/foodme_demo/apps/web/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 4
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "C:/Users/admin/Desktop/foodme_demo/apps/web/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 4
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "C:/Users/admin/Desktop/foodme_demo/apps/web/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list"
+      ],
+      [
+        "json"
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.62.1",
+    "workers": 4,
+    "webServer": {
+      "command": "npm run dev -- --port 5180",
+      "url": "https://foodme-lianals.onrender.com",
+      "reuseExistingServer": true
+    }
+  },
+  "suites": [
+    {
+      "title": "api\\scrum-9-cancel-order.api.spec.ts",
+      "file": "api/scrum-9-cancel-order.api.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "SCRUM-9 cancel order API",
+          "file": "api/scrum-9-cancel-order.api.spec.ts",
+          "line": 50,
+          "column": 6,
+          "specs": [
+            {
+              "title": "TC-SCRUM-9-02 API: cancelling an Accepted order is refused",
+              "ok": true,
+              "tags": [
+                "api",
+                "regression"
+              ],
+              "tests": [
+                {
+                  "timeout": 90000,
+                  "annotations": [
+                    {
+                      "type": "testCase",
+                      "description": "TC-SCRUM-9-02",
+                      "location": {
+                        "file": "C:\\Users\\admin\\Desktop\\foodme_demo\\apps\\web\\e2e\\api\\scrum-9-cancel-order.api.spec.ts",
+                        "line": 55,
+                        "column": 3
+                      }
+                    },
+                    {
+                      "type": "requirement",
+                      "description": "REQ-SCRUM-9-03",
+                      "location": {
+                        "file": "C:\\Users\\admin\\Desktop\\foodme_demo\\apps\\web\\e2e\\api\\scrum-9-cancel-order.api.spec.ts",
+                        "line": 55,
+                        "column": 3
+                      }
+                    },
+                    {
+                      "type": "qase",
+                      "description": "FML-17",
+                      "location": {
+                        "file": "C:\\Users\\admin\\Desktop\\foodme_demo\\apps\\web\\e2e\\api\\scrum-9-cancel-order.api.spec.ts",
+                        "line": 55,
+                        "column": 3
+                      }
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 41603,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-15T12:29:21.182Z",
+                      "annotations": [
+                        {
+                          "type": "testCase",
+                          "description": "TC-SCRUM-9-02",
+                          "location": {
+                            "file": "C:\\Users\\admin\\Desktop\\foodme_demo\\apps\\web\\e2e\\api\\scrum-9-cancel-order.api.spec.ts",
+                            "line": 55,
+                            "column": 3
+                          }
+                        },
+                        {
+                          "type": "requirement",
+                          "description": "REQ-SCRUM-9-03",
+                          "location": {
+                            "file": "C:\\Users\\admin\\Desktop\\foodme_demo\\apps\\web\\e2e\\api\\scrum-9-cancel-order.api.spec.ts",
+                            "line": 55,
+                            "column": 3
+                          }
+                        },
+                        {
+                          "type": "qase",
+                          "description": "FML-17",
+                          "location": {
+                            "file": "C:\\Users\\admin\\Desktop\\foodme_demo\\apps\\web\\e2e\\api\\scrum-9-cancel-order.api.spec.ts",
+                            "line": 55,
+                            "column": 3
+                          }
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "b8cf2cc3b10293672b20-f4182d42e78947bd9673",
+              "file": "api/scrum-9-cancel-order.api.spec.ts",
+              "line": 55,
+              "column": 3
+            },
+            {
+              "title": "TC-SCRUM-9-06 API: another customer cannot cancel someone else's order (looks like an unknown order)",
+              "ok": true,
+              "tags": [
+                "api",
+                "regression",
+                "security"
+              ],
+              "tests": [
+                {
+                  "timeout": 90000,
+                  "annotations": [
+                    {
+                      "type": "testCase",
+                      "description": "TC-SCRUM-9-06",
+                      "location": {
+                        "file": "C:\\Users\\admin\\Desktop\\foodme_demo\\apps\\web\\e2e\\api\\scrum-9-cancel-order.api.spec.ts",
+                        "line": 80,
+                        "column": 3
+                      }
+                    },
+                    {
+                      "type": "requirement",
+                      "description": "REQ-SCRUM-9-04",
+                      "location": {
+                        "file": "C:\\Users\\admin\\Desktop\\foodme_demo\\apps\\web\\e2e\\api\\scrum-9-cancel-order.api.spec.ts",
+                        "line": 80,
+                        "column": 3
+                      }
+                    },
+                    {
+                      "type": "qase",
+                      "description": "FML-21",
+                      "location": {
+                        "file": "C:\\Users\\admin\\Desktop\\foodme_demo\\apps\\web\\e2e\\api\\scrum-9-cancel-order.api.spec.ts",
+                        "line": 80,
+                        "column": 3
+                      }
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 36842,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-15T12:29:21.154Z",
+                      "annotations": [
+                        {
+                          "type": "testCase",
+                          "description": "TC-SCRUM-9-06",
+                          "location": {
+                            "file": "C:\\Users\\admin\\Desktop\\foodme_demo\\apps\\web\\e2e\\api\\scrum-9-cancel-order.api.spec.ts",
+                            "line": 80,
+                            "column": 3
+                          }
+                        },
+                        {
+                          "type": "requirement",
+                          "description": "REQ-SCRUM-9-04",
+                          "location": {
+                            "file": "C:\\Users\\admin\\Desktop\\foodme_demo\\apps\\web\\e2e\\api\\scrum-9-cancel-order.api.spec.ts",
+                            "line": 80,
+                            "column": 3
+                          }
+                        },
+                        {
+                          "type": "qase",
+                          "description": "FML-21",
+                          "location": {
+                            "file": "C:\\Users\\admin\\Desktop\\foodme_demo\\apps\\web\\e2e\\api\\scrum-9-cancel-order.api.spec.ts",
+                            "line": 80,
+                            "column": 3
+                          }
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "b8cf2cc3b10293672b20-f2038633ca9da8a8d5dd",
+              "file": "api/scrum-9-cancel-order.api.spec.ts",
+              "line": 80,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "scrum-9-cancel-order.spec.ts",
+      "file": "scrum-9-cancel-order.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "TC-SCRUM-9-22 UI: the owner cancels from the order tracking page",
+          "ok": true,
+          "tags": [
+            "regression",
+            "known-defect"
+          ],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [
+                {
+                  "type": "testCase",
+                  "description": "TC-SCRUM-9-22",
+                  "location": {
+                    "file": "C:\\Users\\admin\\Desktop\\foodme_demo\\apps\\web\\e2e\\scrum-9-cancel-order.spec.ts",
+                    "line": 21,
+                    "column": 6
+                  }
+                },
+                {
+                  "type": "requirement",
+                  "description": "REQ-SCRUM-9-11, REQ-SCRUM-9-15, REQ-SCRUM-9-19",
+                  "location": {
+                    "file": "C:\\Users\\admin\\Desktop\\foodme_demo\\apps\\web\\e2e\\scrum-9-cancel-order.spec.ts",
+                    "line": 21,
+                    "column": 6
+                  }
+                },
+                {
+                  "type": "qase",
+                  "description": "FML-37",
+                  "location": {
+                    "file": "C:\\Users\\admin\\Desktop\\foodme_demo\\apps\\web\\e2e\\scrum-9-cancel-order.spec.ts",
+                    "line": 21,
+                    "column": 6
+                  }
+                },
+                {
+                  "type": "issue",
+                  "description": "SCRUM-10 — DEF-01: tracking title \"Order cancelled\" instead of \"Cancelled\"",
+                  "location": {
+                    "file": "C:\\Users\\admin\\Desktop\\foodme_demo\\apps\\web\\e2e\\scrum-9-cancel-order.spec.ts",
+                    "line": 21,
+                    "column": 6
+                  }
+                },
+                {
+                  "type": "fail",
+                  "location": {
+                    "file": "C:\\Users\\admin\\Desktop\\foodme_demo\\apps\\web\\e2e\\scrum-9-cancel-order.spec.ts",
+                    "line": 21,
+                    "column": 6
+                  }
+                }
+              ],
+              "expectedStatus": "failed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 2,
+                  "status": "failed",
+                  "duration": 45463,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Cancelled', { exact: true })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Cancelled', { exact: true })\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Cancelled', { exact: true })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Cancelled', { exact: true })\u001b[22m\n\n    at C:\\Users\\admin\\Desktop\\foodme_demo\\apps\\web\\e2e\\scrum-9-cancel-order.spec.ts:61:66\n    at C:\\Users\\admin\\Desktop\\foodme_demo\\apps\\web\\e2e\\scrum-9-cancel-order.spec.ts:56:5",
+                    "location": {
+                      "file": "C:\\Users\\admin\\Desktop\\foodme_demo\\apps\\web\\e2e\\scrum-9-cancel-order.spec.ts",
+                      "column": 66,
+                      "line": 61
+                    },
+                    "snippet": "  59 |       await expect(dialog).toBeHidden();\n  60 |       // Expected: the page shows the status title \"Cancelled\" (CHG-01: no other text).\n> 61 |       await expect(page.getByText(\"Cancelled\", { exact: true })).toBeVisible();\n     |                                                                  ^\n  62 |     });\n  63 |   },\n  64 | );"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "C:\\Users\\admin\\Desktop\\foodme_demo\\apps\\web\\e2e\\scrum-9-cancel-order.spec.ts",
+                        "column": 66,
+                        "line": 61
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Cancelled', { exact: true })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Cancelled', { exact: true })\u001b[22m\n\n\n  59 |       await expect(dialog).toBeHidden();\n  60 |       // Expected: the page shows the status title \"Cancelled\" (CHG-01: no other text).\n> 61 |       await expect(page.getByText(\"Cancelled\", { exact: true })).toBeVisible();\n     |                                                                  ^\n  62 |     });\n  63 |   },\n  64 | );\n    at C:\\Users\\admin\\Desktop\\foodme_demo\\apps\\web\\e2e\\scrum-9-cancel-order.spec.ts:61:66\n    at C:\\Users\\admin\\Desktop\\foodme_demo\\apps\\web\\e2e\\scrum-9-cancel-order.spec.ts:56:5"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "steps": [
+                    {
+                      "title": "1. Open the tracking page of the order",
+                      "duration": 3425
+                    },
+                    {
+                      "title": "2. Click \"Cancel order\"",
+                      "duration": 76
+                    },
+                    {
+                      "title": "3. Click \"Cancel order\" in the confirmation",
+                      "duration": 9512,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Cancelled', { exact: true })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Cancelled', { exact: true })\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Cancelled', { exact: true })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Cancelled', { exact: true })\u001b[22m\n\n    at C:\\Users\\admin\\Desktop\\foodme_demo\\apps\\web\\e2e\\scrum-9-cancel-order.spec.ts:61:66\n    at C:\\Users\\admin\\Desktop\\foodme_demo\\apps\\web\\e2e\\scrum-9-cancel-order.spec.ts:56:5",
+                        "location": {
+                          "file": "C:\\Users\\admin\\Desktop\\foodme_demo\\apps\\web\\e2e\\scrum-9-cancel-order.spec.ts",
+                          "column": 66,
+                          "line": 61
+                        },
+                        "snippet": "  59 |       await expect(dialog).toBeHidden();\n  60 |       // Expected: the page shows the status title \"Cancelled\" (CHG-01: no other text).\n> 61 |       await expect(page.getByText(\"Cancelled\", { exact: true })).toBeVisible();\n     |                                                                  ^\n  62 |     });\n  63 |   },\n  64 | );"
+                      }
+                    }
+                  ],
+                  "startTime": "2026-10-15T12:29:21.169Z",
+                  "annotations": [
+                    {
+                      "type": "testCase",
+                      "description": "TC-SCRUM-9-22",
+                      "location": {
+                        "file": "C:\\Users\\admin\\Desktop\\foodme_demo\\apps\\web\\e2e\\scrum-9-cancel-order.spec.ts",
+                        "line": 21,
+                        "column": 6
+                      }
+                    },
+                    {
+                      "type": "requirement",
+                      "description": "REQ-SCRUM-9-11, REQ-SCRUM-9-15, REQ-SCRUM-9-19",
+                      "location": {
+                        "file": "C:\\Users\\admin\\Desktop\\foodme_demo\\apps\\web\\e2e\\scrum-9-cancel-order.spec.ts",
+                        "line": 21,
+                        "column": 6
+                      }
+                    },
+                    {
+                      "type": "qase",
+                      "description": "FML-37",
+                      "location": {
+                        "file": "C:\\Users\\admin\\Desktop\\foodme_demo\\apps\\web\\e2e\\scrum-9-cancel-order.spec.ts",
+                        "line": 21,
+                        "column": 6
+                      }
+                    },
+                    {
+                      "type": "issue",
+                      "description": "SCRUM-10 — DEF-01: tracking title \"Order cancelled\" instead of \"Cancelled\"",
+                      "location": {
+                        "file": "C:\\Users\\admin\\Desktop\\foodme_demo\\apps\\web\\e2e\\scrum-9-cancel-order.spec.ts",
+                        "line": 21,
+                        "column": 6
+                      }
+                    },
+                    {
+                      "type": "fail",
+                      "location": {
+                        "file": "C:\\Users\\admin\\Desktop\\foodme_demo\\apps\\web\\e2e\\scrum-9-cancel-order.spec.ts",
+                        "line": 21,
+                        "column": 6
+                      }
+                    }
+                  ],
+                  "attachments": [
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "C:\\Users\\admin\\Desktop\\foodme_demo\\apps\\web\\test-results\\scrum-9-cancel-order-TC-SC-ea38e-rom-the-order-tracking-page-chromium\\error-context.md"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "C:\\Users\\admin\\Desktop\\foodme_demo\\apps\\web\\e2e\\scrum-9-cancel-order.spec.ts",
+                    "column": 66,
+                    "line": 61
+                  }
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a2b51cb6a40d7839aafa-261bb953d9a027155da2",
+          "file": "scrum-9-cancel-order.spec.ts",
+          "line": 21,
+          "column": 6
+        },
+        {
+          "title": "TC-SCRUM-9-34 UI: sign up, place an order, cancel it from My Orders (Desktop 1920x1080)",
+          "ok": true,
+          "tags": [
+            "regression"
+          ],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [
+                {
+                  "type": "testCase",
+                  "description": "TC-SCRUM-9-34",
+                  "location": {
+                    "file": "C:\\Users\\admin\\Desktop\\foodme_demo\\apps\\web\\e2e\\scrum-9-cancel-order.spec.ts",
+                    "line": 66,
+                    "column": 1
+                  }
+                },
+                {
+                  "type": "requirement",
+                  "description": "REQ-SCRUM-9-27, REQ-SCRUM-9-02, REQ-SCRUM-9-15",
+                  "location": {
+                    "file": "C:\\Users\\admin\\Desktop\\foodme_demo\\apps\\web\\e2e\\scrum-9-cancel-order.spec.ts",
+                    "line": 66,
+                    "column": 1
+                  }
+                },
+                {
+                  "type": "qase",
+                  "description": "FML-49",
+                  "location": {
+                    "file": "C:\\Users\\admin\\Desktop\\foodme_demo\\apps\\web\\e2e\\scrum-9-cancel-order.spec.ts",
+                    "line": 66,
+                    "column": 1
+                  }
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 3,
+                  "status": "passed",
+                  "duration": 49247,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "steps": [
+                    {
+                      "title": "1. Sign up as a new customer",
+                      "duration": 7904
+                    },
+                    {
+                      "title": "2. Open a chef page",
+                      "duration": 4346
+                    },
+                    {
+                      "title": "3. Add one dish to the cart",
+                      "duration": 1023
+                    },
+                    {
+                      "title": "4. Go to checkout, choose takeaway and place the order",
+                      "duration": 7374
+                    },
+                    {
+                      "title": "5. Open My Orders",
+                      "duration": 2398
+                    },
+                    {
+                      "title": "6. Click \"Cancel order\"",
+                      "duration": 61
+                    },
+                    {
+                      "title": "7. Click \"Cancel order\" in the confirmation",
+                      "duration": 3325
+                    }
+                  ],
+                  "startTime": "2026-10-15T12:29:21.136Z",
+                  "annotations": [
+                    {
+                      "type": "testCase",
+                      "description": "TC-SCRUM-9-34",
+                      "location": {
+                        "file": "C:\\Users\\admin\\Desktop\\foodme_demo\\apps\\web\\e2e\\scrum-9-cancel-order.spec.ts",
+                        "line": 66,
+                        "column": 1
+                      }
+                    },
+                    {
+                      "type": "requirement",
+                      "description": "REQ-SCRUM-9-27, REQ-SCRUM-9-02, REQ-SCRUM-9-15",
+                      "location": {
+                        "file": "C:\\Users\\admin\\Desktop\\foodme_demo\\apps\\web\\e2e\\scrum-9-cancel-order.spec.ts",
+                        "line": 66,
+                        "column": 1
+                      }
+                    },
+                    {
+                      "type": "qase",
+                      "description": "FML-49",
+                      "location": {
+                        "file": "C:\\Users\\admin\\Desktop\\foodme_demo\\apps\\web\\e2e\\scrum-9-cancel-order.spec.ts",
+                        "line": 66,
+                        "column": 1
+                      }
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a2b51cb6a40d7839aafa-4e0aaf1ebdc24723bce5",
+          "file": "scrum-9-cancel-order.spec.ts",
+          "line": 66,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-10-15T12:29:18.041Z",
+    "duration": 54028.345,
+    "expected": 4,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

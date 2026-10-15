@@ -1,0 +1,66 @@
+{
+  "feature": "SCRUM-9",
+  "step": "07-test-judge",
+  "judged_at": "2026-10-15",
+  "inputs": {
+    "automation": "automation.yaml",
+    "test_cases": "test_cases.yaml (revision 3)",
+    "execution": "execution.md",
+    "qase_project": "FML",
+    "qase_cases_read": [17, 21, 37, 49],
+    "rules": [".agents/rules/e2e-tests.md", ".agents/rules/defect-management.md"],
+    "spec_files": ["apps/web/e2e/scrum-9-cancel-order.spec.ts", "apps/web/e2e/api/scrum-9-cancel-order.api.spec.ts"],
+    "helpers": ["apps/web/e2e/api/api-helpers.ts", "apps/web/e2e/auth.ts"],
+    "tests_judged": 4
+  },
+  "overall": "FAIL",
+  "blocked": false,
+  "obstacles": [],
+  "summary": { "pass": 2, "fail": 2, "unsure": 0 },
+  "tests": [
+    {
+      "id": "TC-SCRUM-9-34",
+      "qase_id": 49,
+      "file": "apps/web/e2e/scrum-9-cancel-order.spec.ts",
+      "verdict": "FAIL",
+      "failed_checks": [2],
+      "reason": "Check 2 (fidelity), lines 88-90: the Qase precondition is 'The storefront home page is open' and step 1 is 'Sign in -> Create account'. The test never opens the home page and never uses the Sign in entry point; it goes straight to page.goto('/login?next=/orders') and only clicks the 'Create account' tab. On a device-flow case (REQ-SCRUM-9-27) the navigation from the home page is part of the main flow being checked. Also check 2 (nothing extra), line 133: expect(page).toHaveURL(/\\/orders\\/success/) is an assertion the case does not ask for. Note (not failing on its own): the step 4 result 'has a number FM-xxxxxx' is checked on the POST /api/order response (lines 128-132), not on what the user sees.",
+      "suggestion": "Start at page.goto('/'), click the 'Sign in' link/button by role, then the 'Create account' tab. Remove the /orders/success URL assertion or get it added to the Qase case as an expected result. Optionally also assert the order number is visible on the success page."
+    },
+    {
+      "id": "TC-SCRUM-9-02",
+      "qase_id": 17,
+      "file": "apps/web/e2e/api/scrum-9-cancel-order.api.spec.ts",
+      "verdict": "PASS",
+      "failed_checks": [],
+      "reason": "Title, testCase/requirement/qase annotations match automation.yaml, test_cases.yaml and FML-17. Precondition (own customer + order, admin moves to ACCEPTED with 200 check), step 1 asserts 400 and the exact message 'Only new orders can be cancelled.', step 2 re-reads the order and asserts ACCEPTED. No fixed waits; describe-level timeout 90 s has a stated reason (lines 51-53). Tags @api @regression from the describe; file is in e2e/api/*.api.spec.ts.",
+      "suggestion": ""
+    },
+    {
+      "id": "TC-SCRUM-9-06",
+      "qase_id": 21,
+      "file": "apps/web/e2e/api/scrum-9-cancel-order.api.spec.ts",
+      "verdict": "PASS",
+      "failed_checks": [],
+      "reason": "Title and annotations match FML-21. Step 1: B's cancel of A's order -> 404; step 2: FM-999999 -> 404 and the bodies are compared with only the order number and timestamp neutralised (same shape and message); step 3: GET /api/order/number/{n} -> NEW. Fresh customers A and B per run. Tags @api @regression @security match automation.yaml (Qase tag 'security').",
+      "suggestion": ""
+    },
+    {
+      "id": "TC-SCRUM-9-22",
+      "qase_id": 37,
+      "file": "apps/web/e2e/scrum-9-cancel-order.spec.ts",
+      "verdict": "FAIL",
+      "failed_checks": [7, 4],
+      "reason": "Check 7 (known defect), lines 21-64: the marking follows the rule (test.fail + @known-defect + issue 'SCRUM-10 ...') and the step 3 assertion keeps the correct expected result 'Cancelled'. But the whole body is expected to fail, so ANY failure is reported as the expected one: a failed registration/order precondition (lines 35-39), a sign-in timeout (line 15), a missing 'Cancel order' button on the tracking page (line 45, REQ-SCRUM-9-11), a wrong confirmation text (lines 52-53) or a cancel request that fails so the dialog never closes (line 59) would all stay green. Nothing confirms that the order really became CANCELLED before the defective assertion. The marking can hide unrelated failures. Check 4: test.setTimeout(120_000) (line 33) and the 20_000 ms expect timeouts (lines 15, 45) have no stated reason in this test (the reason is only given for TC-34 at lines 77-78).",
+      "suggestion": "Add an assertion that the order is CANCELLED (e.g. GET /api/order/number/{number}) after the dialog closes, and limit the expected failure to the defective assertion only — e.g. call test.fail() inside the body right before the 'Cancelled' title check (so earlier failures stay red), or keep steps 1-2 plus the cancellation in a normal test and only the title check under test.fail. If the project rule requires the test.fail(title, details, body) form, raise this as a rule question. Add a one-line reason for the raised timeouts."
+    }
+  ],
+  "flakiness_risks": [
+    "TC-SCRUM-9-34 step 4 (lines 116-123): the checkout form can reset to 'Delivery' while loading (stated in the test). aria-pressed=true is checked once after the click, but a reset after that check and before 'Place order' would still submit a delivery order or fail validation.",
+    "TC-SCRUM-9-34 line 85: the email uses only Date.now() (no random part, unlike registerCustomerViaApi). Unique per run, but two parallel runs or future extra device projects starting in the same millisecond would collide with 'already registered'.",
+    "TC-SCRUM-9-02 adminIdOf (api spec lines 28-36): the order id is looked up in the first 50 NEW orders (sorted by createdAt DESC in AdminOrderService). The shared Render database already has 50+ NEW orders (execution.md TC-14), so if more than 50 orders are placed between the order and the lookup (parallel runs, other students) the order is not found.",
+    "All tests run against the shared Render instance with SimulatedLatencyConfig (200-1500 ms) and a possible cold start (503 'Application loading' for minutes, execution.md); activeChefs() makes one request per active chef (up to 51 requests) before every test, which uses a large part of the timeout budget.",
+    "TC-SCRUM-9-22 (lines 21-64): because the whole test is under test.fail(), a flaky environment failure (cold start, timeout) is reported as the expected known-defect failure, so flakiness in this test is invisible."
+  ],
+  "scope_issues": []
+}

@@ -75,3 +75,4 @@ infra/docker-compose.local.yml
 # AgentSecrets personal project link
 .agentsecrets/
 
+.playwright-mcp/

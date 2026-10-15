@@ -1,0 +1,46 @@
+# Step 06 Automate — which test cases are automated, and where.
+# Scope agreed with the human (2026-10-15): TC-SCRUM-9-34 as a reviewed pilot + 3 High-priority cases.
+feature: SCRUM-9
+qase:
+  project: FML
+  suite_id: 6
+
+automated:
+  - id: TC-SCRUM-9-34
+    qase_id: 49
+    file: apps/web/e2e/scrum-9-cancel-order.spec.ts
+    test: "TC-SCRUM-9-34 UI: sign up, place an order, cancel it from My Orders (Desktop 1920x1080)"
+    tags: ["@regression"]
+    note: Pilot, run and approved by the human (orders FM-100126…128). Desktop only; the other approved devices are not automated in this scope.
+  - id: TC-SCRUM-9-02
+    qase_id: 17
+    file: apps/web/e2e/api/scrum-9-cancel-order.api.spec.ts
+    test: "TC-SCRUM-9-02 API: cancelling an Accepted order is refused"
+    tags: ["@api", "@regression"]
+  - id: TC-SCRUM-9-06
+    qase_id: 21
+    file: apps/web/e2e/api/scrum-9-cancel-order.api.spec.ts
+    test: "TC-SCRUM-9-06 API: another customer cannot cancel someone else's order (looks like an unknown order)"
+    tags: ["@api", "@regression", "@security"]
+  - id: TC-SCRUM-9-22
+    qase_id: 37
+    file: apps/web/e2e/scrum-9-cancel-order.spec.ts
+    test: "TC-SCRUM-9-22 UI: the owner cancels from the order tracking page"
+    tags: ["@regression", "@known-defect"]
+    known_defect: SCRUM-10 (DEF-01) — marked test.fail(); expected result unchanged
+
+not_automated:
+  - reason: Out of the agreed homework scope (pilot + 3 High-priority cases).
+    cases: [TC-SCRUM-9-01, 03, 04, 05, 08, 09, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 23, 24, 25, 26, 27, 28, 29, 30, 33, 35, 36, 37]
+  - reason: Open testware issue TW-02 (revenue is a rolling latest-100 window; expected result not checkable as written).
+    cases: [TC-SCRUM-9-31, TC-SCRUM-9-32, TC-SCRUM-9-38]
+  - reason: Deprecated (duplicate of TC-SCRUM-9-06 step 2).
+    cases: [TC-SCRUM-9-07]
+  - reason: Other device runs of TC-SCRUM-9-34 (Laptop, Pixel 7, Galaxy S24, iPhone 15 WebKit, iPad WebKit) — out of the agreed scope.
+    cases: [TC-SCRUM-9-34 on non-desktop devices]
+
+run:
+  # From apps/web. Runs against baseURL in playwright.config.ts (Render).
+  feature: npx playwright test e2e/scrum-9-cancel-order.spec.ts e2e/api/scrum-9-cancel-order.api.spec.ts
+  watch: npx playwright test e2e/scrum-9-cancel-order.spec.ts e2e/api/scrum-9-cancel-order.api.spec.ts --ui
+  report: npx playwright show-report

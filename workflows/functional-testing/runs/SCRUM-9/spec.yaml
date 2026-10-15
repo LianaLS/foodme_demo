@@ -1,0 +1,351 @@
+# Step 01 Requirements — test basis for SCRUM-9.
+# Source of truth: Jira SCRUM-9 (description in Armenian, English UI texts listed at its end).
+# cancel-order.spec.md is the English copy; its header still refers to the instructor's KAN-5.
+feature: SCRUM-9
+title: Let customers cancel an order before the kitchen accepts it
+source: Jira SCRUM-9 (copy in cancel-order.spec.md; subtasks KAN-12 backend, KAN-13 storefront, KAN-14 admin)
+
+requirements:
+  # Backend (KAN-12)
+  - id: REQ-SCRUM-9-01
+    text: The system has an order status "Cancelled".
+    source: "Scope; KAN-12"
+  - id: REQ-SCRUM-9-02
+    text: The signed-in customer who placed an order can cancel it while its status is Received.
+    source: "Scope; Status rules (Received: yes); AC-1; KAN-12"
+  - id: REQ-SCRUM-9-03
+    text: A cancellation of an order in status Accepted or later is refused with HTTP 400 and the message "Only new orders can be cancelled.", and the message is shown on the customer's screen.
+    source: "Status rules (Accepted or later); AC-2; KAN-12"
+  - id: REQ-SCRUM-9-04
+    text: A cancellation by anyone other than the customer who placed the order is answered as if the order does not exist (HTTP 404, the same answer as for an unknown order number).
+    source: "KAN-12"
+  - id: REQ-SCRUM-9-05
+    text: A visitor who is not signed in cannot cancel an order (HTTP 401).
+    source: "Users (customer is signed in); KAN-12 Done when (not signed in)"
+  - id: REQ-SCRUM-9-06
+    text: A customer cannot cancel an order that is already Cancelled; the refusal shows the same message as for Accepted orders ("Only new orders can be cancelled.").
+    source: "Status rules (Cancelled: customer no)"
+  - id: REQ-SCRUM-9-07
+    text: Nobody, including the admin team, can move a Cancelled order to any other status.
+    source: "Status rules (Cancelled: admin no, final); AC-4; KAN-12"
+  - id: REQ-SCRUM-9-08
+    text: The admin team can still change the status of orders that are Received, Accepted or later, but cannot set an order to Cancelled; only the customer who placed it can.
+    source: "Status rules (admin column: yes, yes)"
+  - id: REQ-SCRUM-9-09
+    text: Monitoring counts cancelled orders alongside placed orders.
+    source: "Scope; KAN-12"
+    note: Not covered by black-box functional testing (technical, not visible in the UI); at most one technical check of the metrics endpoint.
+  # Storefront (KAN-13)
+  - id: REQ-SCRUM-9-10
+    text: On My Orders, every order in status Received shows a "Cancel order" button.
+    source: "Scope; KAN-13"
+  - id: REQ-SCRUM-9-11
+    text: On the order tracking page, an order in status Received shows a "Cancel order" button only to the signed-in customer who placed it. [Assumption — to confirm with the product owner]
+    source: "Scope; KAN-13"
+  - id: REQ-SCRUM-9-12
+    text: Orders in status Accepted or later show no cancel option on My Orders or the tracking page.
+    source: "AC-2"
+  - id: REQ-SCRUM-9-13
+    text: Clicking "Cancel order" asks "Cancel order FM-xxxxxx? This can't be undone." (FM-xxxxxx is the order number) with the choices "Keep order" and "Cancel order".
+    source: "KAN-13"
+  - id: REQ-SCRUM-9-14
+    text: Choosing "Keep order" closes the confirmation and leaves the order unchanged.
+    source: "KAN-13 (derived from the Keep order choice)"
+  - id: REQ-SCRUM-9-15
+    text: Choosing "Cancel order" cancels the order, and it then shows the status "Cancelled".
+    source: "KAN-13; AC-3"
+  - id: REQ-SCRUM-9-16
+    text: The "Cancelled" status is shown in a neutral grey style, different from the red "Declined" status.
+    source: "KAN-13"
+  - id: REQ-SCRUM-9-17
+    text: If the kitchen accepted the order just before the customer confirmed the cancellation, the page shows the reason, which is the refusal message "Only new orders can be cancelled." (REQ-SCRUM-9-03), and refreshes the order so its real status is shown.
+    source: "KAN-13; AC-2"
+  - id: REQ-SCRUM-9-18
+    text: "The tracking progress bar does not show a cancelled order as in progress: no step of the progress bar is shown as the current step, and the status title is \"Cancelled\". Whether the bar is shown at all is not specified."
+    source: "KAN-13"
+  # Labelling everywhere (AC-3)
+  - id: REQ-SCRUM-9-19
+    text: A cancelled order is labelled "Cancelled" on My Orders, on the order tracking page (as the status title of the order) and in the admin panel.
+    source: "AC-3"
+  # Admin panel (KAN-14)
+  - id: REQ-SCRUM-9-20
+    text: In the admin panel, "Cancelled" is shown as its own status, spelled exactly "Cancelled", with its own colour in the order list and in the order details.
+    source: "Scope; KAN-14"
+  - id: REQ-SCRUM-9-21
+    text: The admin order list can be filtered to show only cancelled orders.
+    source: "Scope; KAN-14"
+  - id: REQ-SCRUM-9-22
+    text: A cancelled order shows the note "Cancelled by customer" in the admin order list and in the order details.
+    source: "KAN-14"
+  - id: REQ-SCRUM-9-23
+    text: A cancelled order has no Accept, Deliver or Reject buttons in the admin panel.
+    source: "Users (operations); KAN-14"
+  - id: REQ-SCRUM-9-24
+    text: The admin dashboard "Recent revenue" figure does not include cancelled orders. Orders in Received, Accepted and Delivered status are included.
+    source: "Scope; AC-5; KAN-14"
+  - id: REQ-SCRUM-9-25
+    text: The admin dashboard "Recent revenue" figure does not include declined orders.
+    source: "KAN-14"
+  # Added by approved changes
+  - id: REQ-SCRUM-9-26
+    text: A customer cannot cancel a Declined order; the refusal is the same as for Accepted orders.
+    source: "Status rules; GAP-04 (CHG-10)"
+  - id: REQ-SCRUM-9-27
+    text: The end-to-end check (sign up → place an order → cancel from My Orders → "Cancelled") covers the phone and desktop screen sizes in common use now. The exact device list is set in the test plan (step 02).
+    source: "KAN-13 Done when; GAP-12 (CHG-15)"
+
+acceptance_criteria:
+  - id: AC-1
+    text: Customers can cancel their own order only while it is still "Received" (not yet accepted).
+    covers: [REQ-SCRUM-9-02, REQ-SCRUM-9-03, REQ-SCRUM-9-04, REQ-SCRUM-9-05, REQ-SCRUM-9-06, REQ-SCRUM-9-26]
+  - id: AC-2
+    text: Once the kitchen accepts it, the cancel option disappears and cancellation is refused.
+    covers: [REQ-SCRUM-9-03, REQ-SCRUM-9-12, REQ-SCRUM-9-17, REQ-SCRUM-9-26]
+  - id: AC-3
+    text: Cancelled orders are clearly labelled "Cancelled" everywhere — My Orders, order tracking and the admin panel.
+    covers: [REQ-SCRUM-9-15, REQ-SCRUM-9-16, REQ-SCRUM-9-19, REQ-SCRUM-9-20, REQ-SCRUM-9-22]
+  - id: AC-4
+    text: A cancelled order is final — nobody can move it back to any other status.
+    covers: [REQ-SCRUM-9-06, REQ-SCRUM-9-07]
+  - id: AC-5
+    text: Cancelled orders don't count towards revenue.
+    covers: [REQ-SCRUM-9-24, REQ-SCRUM-9-25]
+
+rules:
+  statuses: [Received, Accepted, Delivered, Declined, Cancelled]   # "Accepted or later" = Accepted, Delivered, Declined
+  transitions:
+    - from: Received
+      to: Cancelled
+      who: the customer who placed the order (signed in)
+    - from: Received
+      to: other statuses except Cancelled
+      who: admin team
+    - from: Accepted or later
+      to: other statuses except Cancelled
+      who: admin team
+    - from: Accepted, Delivered or Declined
+      to: Cancelled
+      who: nobody (customer refused with HTTP 400 "Only new orders can be cancelled.")
+    - from: Cancelled
+      to: any
+      who: nobody (final)
+  roles:
+    - role: Customer (signed in, owner of the order)
+      can: cancel own order while Received, from My Orders or the tracking page
+    - role: Other customer / not signed in visitor
+      can: nothing; someone else's order behaves as if it does not exist (404); not signed in gets 401
+    - role: Operations (back office)
+      can: see and filter cancelled orders; change status of non-cancelled orders; cannot set Cancelled; cannot change a cancelled order
+  texts:
+    - "Cancel order"                                       # button
+    - "Cancel order FM-xxxxxx? This can't be undone."       # confirmation question
+    - "Keep order"                                         # confirmation choice
+    - "Cancel order"                                       # confirmation choice
+    - "Cancelled"                                          # status label
+    - "Declined"                                           # existing red status, for contrast
+    - "Cancelled by customer"                              # admin note
+    - "Only new orders can be cancelled."                  # refusal message
+
+out_of_scope:
+  - Cancelling after the kitchen accepts the order
+  - Asking the customer for a cancellation reason
+  - Refunds (orders are cash on delivery)
+  - "Proposal for a later task (CHG-10): cancelling a Declined order when the order time was violated"
+
+gaps:
+  - id: GAP-01
+    question: What title and text must the order tracking page show for a cancelled order? The spec gives the label "Cancelled" (AC-3) but no page text.
+    status: answered
+    answer: "The tracking page uses the name \"Cancelled\" as the status title; no other text. (CHG-01)"
+  - id: GAP-02
+    question: Which HTTP status codes are expected for a refused cancellation (order not Received), for someone else's order ("as if it doesn't exist", 404?) and for a visitor who is not signed in (401?)?
+    status: answered
+    answer: "Standard codes: 400 for an order that is not Received, 404 for someone else's or an unknown order, 401 when not signed in. The message \"Only new orders can be cancelled.\" stays and is shown on the customer's screen. (CHG-07, CHG-08, CHG-09)"
+  - id: GAP-03
+    question: What does the customer get when trying to cancel an order that is already Cancelled — the same "Only new orders can be cancelled." message, or something else?
+    status: answered
+    answer: "Yes, the same message \"Only new orders can be cancelled.\". (CHG-03)"
+  - id: GAP-04
+    question: Does "Accepted or later" include Declined? Can a customer cancel a Declined order, and if not, which message is shown?
+    status: answered
+    answer: "\"Accepted or later\" includes Declined; a Declined order cannot be cancelled in this release. Cancelling a Declined order when the order time was violated is a proposal for a later task. (CHG-10)"
+  - id: GAP-05
+    question: On the tracking page, is the "Cancel order" button shown to a signed-in customer who is not the owner of the order (the spec only says "when the customer is signed in")?
+    status: answered
+    answer: "Only the signed-in owner sees the button. [Assumption — to confirm with the product owner] (CHG-11)"
+  - id: GAP-06
+    question: Can the admin team set an order to Cancelled themselves, or only customers? (The note says "Cancelled by customer".)
+    status: answered
+    answer: "Answered by the spec: KAN-12 \"Only the customer who placed the order can cancel it.\" The admin team cannot set Cancelled. (CHG-04)"
+  - id: GAP-07
+    question: Where must the note "Cancelled by customer" appear — only in the order details, or also in the order list?
+    status: answered
+    answer: "In the admin order list and in the order details. (CHG-05)"
+  - id: GAP-08
+    question: When the kitchen accepted the order first (REQ-SCRUM-9-17), what is "the reason" shown to the customer — the message "Only new orders can be cancelled."?
+    status: answered
+    answer: "Yes, the reason is \"Only new orders can be cancelled.\". (CHG-06)"
+  - id: GAP-09
+    question: How is "Monitoring counts cancelled orders" checked — which metric name or dashboard, and is it in scope for functional testing?
+    status: answered
+    answer: "Out of scope for black-box functional testing; at most one technical check of the metrics endpoint. (CHG-12)"
+  - id: GAP-10
+    question: Which "Dashboard revenue figures" are meant (one total or several), and over which period/orders are they calculated?
+    status: answered
+    answer: "The admin dashboard \"Recent revenue\" figure. (CHG-13, CHG-14)"
+  - id: GAP-11
+    question: Must the admin panel show the label exactly as "Cancelled" (AC-3), or is another spelling of the status (for example "CANCELLED") acceptable there?
+    status: answered
+    answer: "\"Cancelled\" everywhere, same spelling, including the admin panel. (CHG-02)"
+  - id: GAP-12
+    question: For the "mobile and desktop" end-to-end check (KAN-13 Done when), which mobile device or screen size is the reference?
+    status: answered
+    answer: "All phones and desktop screens in common use now; the exact device list is set in the test plan (step 02). (CHG-15)"
+
+  - id: GAP-13
+    question: How must the tracking progress bar look for a cancelled order (REQ-SCRUM-9-18 says only "not shown as in progress")? Raised by the case judge, TC-SCRUM-9-23 UNSURE.
+    status: answered
+    answer: "No step of the progress bar is shown as the current step, and the status title is \"Cancelled\"; whether the bar is shown at all is not specified. (CHG-16)"
+
+  - id: GAP-14
+    question: Which order statuses count towards the "Recent revenue" figure? The spec only says Cancelled and Declined do not (raised by the case judge, no positive partition could be designed).
+    status: answered
+    answer: "Received, Accepted and Delivered orders are included; Cancelled and Declined are not. (CHG-17)"
+
+changes:
+  - id: CHG-01
+    requirement: REQ-SCRUM-9-19
+    old: "A cancelled order is labelled \"Cancelled\" on My Orders, on the order tracking page and in the admin panel."
+    new: "A cancelled order is labelled \"Cancelled\" on My Orders, on the order tracking page (as the status title of the order) and in the admin panel."
+    reason: GAP-01 answered
+    approved_by: Liana Sarajyan
+    date: 2026-10-14
+    jira_comment: "10033"
+  - id: CHG-02
+    requirement: REQ-SCRUM-9-20
+    old: "In the admin panel, \"Cancelled\" is shown as its own status with its own colour in the order list and in the order details."
+    new: "In the admin panel, \"Cancelled\" is shown as its own status, spelled exactly \"Cancelled\", with its own colour in the order list and in the order details."
+    reason: GAP-11 answered
+    approved_by: Liana Sarajyan
+    date: 2026-10-14
+    jira_comment: "10034"
+  - id: CHG-03
+    requirement: REQ-SCRUM-9-06
+    old: "A customer cannot cancel an order that is already Cancelled."
+    new: "A customer cannot cancel an order that is already Cancelled; the refusal shows the same message as for Accepted orders (\"Only new orders can be cancelled.\")."
+    reason: GAP-03 answered
+    approved_by: Liana Sarajyan
+    date: 2026-10-14
+    jira_comment: "10035"
+  - id: CHG-04
+    requirement: REQ-SCRUM-9-08
+    old: "The admin team can still change the status of orders that are Received, Accepted or later."
+    new: "The admin team can still change the status of orders that are Received, Accepted or later, but cannot set an order to Cancelled; only the customer who placed it can."
+    reason: GAP-06 answered
+    approved_by: Liana Sarajyan
+    date: 2026-10-14
+    jira_comment: "10036"
+  - id: CHG-05
+    requirement: REQ-SCRUM-9-22
+    old: "A cancelled order shows the note \"Cancelled by customer\" in the admin panel."
+    new: "A cancelled order shows the note \"Cancelled by customer\" in the admin order list and in the order details."
+    reason: GAP-07 answered
+    approved_by: Liana Sarajyan
+    date: 2026-10-14
+    jira_comment: "10037"
+  - id: CHG-06
+    requirement: REQ-SCRUM-9-17
+    old: "If the kitchen accepted the order just before the customer confirmed the cancellation, the page shows the reason and refreshes the order so its real status is shown."
+    new: "If the kitchen accepted the order just before the customer confirmed the cancellation, the page shows the reason, which is the refusal message \"Only new orders can be cancelled.\" (REQ-SCRUM-9-03), and refreshes the order so its real status is shown."
+    reason: GAP-08 answered
+    approved_by: Liana Sarajyan
+    date: 2026-10-14
+    jira_comment: "10038"
+  - id: CHG-07
+    requirement: REQ-SCRUM-9-03
+    old: "A cancellation of an order in status Accepted or later is refused with the message \"Only new orders can be cancelled.\""
+    new: "A cancellation of an order in status Accepted or later is refused with HTTP 400 and the message \"Only new orders can be cancelled.\", and the message is shown on the customer's screen."
+    reason: GAP-02 answered
+    approved_by: Liana Sarajyan
+    date: 2026-10-14
+    jira_comment: "10039"
+  - id: CHG-08
+    requirement: REQ-SCRUM-9-04
+    old: "A cancellation by anyone other than the customer who placed the order is answered as if the order does not exist."
+    new: "A cancellation by anyone other than the customer who placed the order is answered as if the order does not exist (HTTP 404, the same answer as for an unknown order number)."
+    reason: GAP-02 answered
+    approved_by: Liana Sarajyan
+    date: 2026-10-14
+    jira_comment: "10040"
+  - id: CHG-09
+    requirement: REQ-SCRUM-9-05
+    old: "A visitor who is not signed in cannot cancel an order."
+    new: "A visitor who is not signed in cannot cancel an order (HTTP 401)."
+    reason: GAP-02 answered
+    approved_by: Liana Sarajyan
+    date: 2026-10-14
+    jira_comment: "10041"
+  - id: CHG-10
+    requirement: REQ-SCRUM-9-26 (new)
+    old: "(none)"
+    new: "A customer cannot cancel a Declined order; the refusal is the same as for Accepted orders."
+    reason: GAP-04 answered
+    approved_by: Liana Sarajyan
+    date: 2026-10-14
+    jira_comment: "10042"
+  - id: CHG-11
+    requirement: REQ-SCRUM-9-11
+    old: "On the order tracking page, an order in status Received shows a \"Cancel order\" button only when the customer is signed in."
+    new: "On the order tracking page, an order in status Received shows a \"Cancel order\" button only to the signed-in customer who placed it. [Assumption — to confirm with the product owner]"
+    reason: GAP-05 answered
+    approved_by: Liana Sarajyan
+    date: 2026-10-14
+    jira_comment: "10043"
+  - id: CHG-12
+    requirement: REQ-SCRUM-9-09
+    old: "Monitoring counts cancelled orders alongside placed orders."
+    new: "Monitoring counts cancelled orders alongside placed orders. Not covered by black-box functional testing (technical, not visible in the UI); at most one technical check of the metrics endpoint."
+    reason: GAP-09 answered
+    approved_by: Liana Sarajyan
+    date: 2026-10-14
+    jira_comment: "10044"
+  - id: CHG-13
+    requirement: REQ-SCRUM-9-24
+    old: "Dashboard revenue figures do not include cancelled orders."
+    new: "The admin dashboard \"Recent revenue\" figure does not include cancelled orders."
+    reason: GAP-10 answered
+    approved_by: Liana Sarajyan
+    date: 2026-10-14
+    jira_comment: "10045"
+  - id: CHG-14
+    requirement: REQ-SCRUM-9-25
+    old: "Dashboard revenue figures do not include declined orders."
+    new: "The admin dashboard \"Recent revenue\" figure does not include declined orders."
+    reason: GAP-10 answered
+    approved_by: Liana Sarajyan
+    date: 2026-10-14
+    jira_comment: "10046"
+  - id: CHG-15
+    requirement: REQ-SCRUM-9-27 (new)
+    old: "(none)"
+    new: "The end-to-end check (sign up → place an order → cancel from My Orders → \"Cancelled\") covers the phone and desktop screen sizes in common use now. The exact device list is set in the test plan (step 02)."
+    reason: GAP-12 answered
+    approved_by: Liana Sarajyan
+    date: 2026-10-14
+    jira_comment: "10047"
+  - id: CHG-16
+    requirement: REQ-SCRUM-9-18
+    old: "The tracking progress bar does not show a cancelled order as in progress."
+    new: "The tracking progress bar does not show a cancelled order as in progress: no step of the progress bar is shown as the current step, and the status title is \"Cancelled\". Whether the bar is shown at all is not specified."
+    reason: GAP-13 answered (raised by the case judge)
+    approved_by: Liana Sarajyan
+    date: 2026-10-14
+    jira_comment: "10081"
+  - id: CHG-17
+    requirement: REQ-SCRUM-9-24
+    old: "The admin dashboard \"Recent revenue\" figure does not include cancelled orders."
+    new: "The admin dashboard \"Recent revenue\" figure does not include cancelled orders. Orders in Received, Accepted and Delivered status are included."
+    reason: GAP-14 answered (raised by the case judge)
+    approved_by: Liana Sarajyan
+    date: 2026-10-14
+    jira_comment: "10083"
