@@ -26,7 +26,8 @@ You prepare a short, clear guide about a new feature for people who were not par
    - "Write a guide in Armenian, short and in plain human language. Two parts: (1) for users — what is new and how to use it; (2) for the IT team — how it works technically. Keep button names, messages, status names, URLs and code in English, exactly as given. Use only the facts below; do not add anything. Maximum about one page."
    - then the content of `guide_facts.md`.
 3. **Ask Gemini**, using only this command (the API key is injected by agentsecrets and never shown):
-   `cmd /c "type <path of guide_prompt.md> | agentsecrets env -- gemini -p ""Follow the instructions in the input exactly."""`
+   `cmd /c "type <path of guide_prompt.md> | agentsecrets env -- gemini -m gemini-2.5-flash -p ""Follow the instructions in the input exactly."""`
+
    If Gemini answers with a temporary error (for example 503 "high demand"), try again up to 3 times. If it still fails, stop and report the error.
 4. **Check the guide against the facts**: every statement must be in `guide_facts.md`; English UI texts must be unchanged; known issues must be there. Correct factual mistakes yourself and list each correction. Do not change the style.
 5. **Save** the result as `workflows/functional-testing/runs/<feature-key>/guide.md`, with a first line saying it was written by Gemini and checked against the test results, and the date.
